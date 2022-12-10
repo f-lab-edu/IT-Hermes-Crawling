@@ -1,4 +1,12 @@
-const today = new Date();  
+const today = new Date();
+
+/* request 라이브러리 */
+module.exports.request = require('request');
+/* express 라이브러리 */
+module.exports.express = require('express');
+/* cheerio 라이브러리 */
+module.exports.cheerio = require('cheerio');
+
 /*  현재 일자(yyyymmdd) */
 module.exports.todayDate= function() {
     return String(today.getFullYear())+String(today.getMonth()+1).padStart(2,'0')+String(today.getDay()).padStart(2,'0');
