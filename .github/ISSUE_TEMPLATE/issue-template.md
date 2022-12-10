@@ -1,7 +1,7 @@
 ---
 name: Issue Template
 about: "\U0001F4D6 이슈 템플릿입니다."
-title: "[Prefix] 이슈 타이틀"
+title: 'Prefix: 이슈 타이틀'
 labels: ''
 assignees: ''
 
