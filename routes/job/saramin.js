@@ -1,10 +1,9 @@
-// 추후 공통로직js파일에 분리 계획
-const express = require('express');
-const router = express.Router();
-
 const commonFunc = require('../../common');
-let request = require('request');
-let cheerio = require('cheerio');
+let request = commonFunc.request;
+let cheerio = commonFunc.cheerio;
+
+const express = commonFunc.express;
+const router = express.Router();
 
 // 크롤링한 데이터
 let crawingData=[]; 
@@ -18,7 +17,7 @@ const defaultUrl = "https://www.saramin.co.kr";
 */
 
 /* 사람인 데이터 조회 */
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
     /* DB에서 가져오는 데이터
     1. 경력
     2. 마지막 조회 sequence
@@ -38,7 +37,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* 조회 후, 응답 데이터 콜백함수 */
-function saraminCallback(error, response, body) {
+const saraminCallback = (error, response, body) => {
     if (!error && response.statusCode == 200) {
         const $ = cheerio.load(body);
         let data = $('.str_tit');
@@ -79,7 +78,7 @@ function saraminCallback(error, response, body) {
 }
 
 /* 일자 데이터 변환 함수 */
-function convertEndDate(endText) {
+const convertEndDate = (endText) => {
     let endDate;
     if(endText=="오늘마감") {
         endDate=commonFunc.todayDate();
