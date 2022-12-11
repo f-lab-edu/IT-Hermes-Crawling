@@ -37,7 +37,7 @@ function naverNewsCallback(error, response, body){
         let contentData = $('.lede').toArray();
         let imageData = $('.photo a img');
         let urlData = $('.photo a');
-        let dateData = $('.date is_outdated').toArray();
+        let dateData = $('.date.is_outdated').toArray();
 
         let title = [];
         let image = [];
@@ -68,7 +68,7 @@ function naverNewsCallback(error, response, body){
                 content:content[j],
                 image:image[j],
                 url: url[j],
-              // dates: convertDate(dates[i])
+                dates: convertDate(dates[j])
             });
         }
 
@@ -76,21 +76,25 @@ function naverNewsCallback(error, response, body){
 }
 
 const convertDate = (originalDate) => {
-    let base = originalDate.substring(1,originalDate.length);
+    originalDate = originalDate.replace(/\t/,'');
     let contentDate;
-
-    if(base=="시간전"){
-        contentDate = commonFunc.todayDate();
-    }else if(base=="일전"){
-       let num = originalDate[0];
-        const today = new Date();
-       contentDate = commonFunc.customCurrentYearMonthAndDay(today.getMonth()+1,today.getDate()+1-num);
+    
+    if(originalDate[originalDate.length-1]=='전'){
+        let result = originalDate.replace(/[0-9]/g,"");
+        if(result=="시간전" || result=="분전"){
+            contentDate = commonFunc.todayDate();
+        }else{
+            let num = originalDate[0];
+            const today = new Date();
+           contentDate = commonFunc.customCurrentYearMonthAndDay(today.getMonth()+1,today.getDate()-num);
+        }
     }else{
         let date = originalDate.substring(0,10);
         date = date.replace(".","");
         date = date.replace(".","");
         contentDate = date;
     }
+
     return contentDate;
 };
 
