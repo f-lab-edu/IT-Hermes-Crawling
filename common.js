@@ -1,4 +1,4 @@
-const today = new Date();
+let today = new Date();
 
 /* request 라이브러리 */
 module.exports.request = require('request');
@@ -34,10 +34,15 @@ module.exports.isEmpty= function(text) {
         return false;
     }
 }
+
+/* 현재시간을 반환하는 함수 */
+module.exports.createNowDate=() => {
+    return new Date();
+}
+
 /* 초,분,시간,일을 변환하는 함수 */
 module.exports.convertTextToDt= function(text) {
     let stringText = String(text);
-    let editDate;
     if(stringText.includes('초')) {
         let seconds = stringText.replace('초 전','');
         editDate = today.setSeconds(today.getSeconds()-Number(seconds));
@@ -50,8 +55,11 @@ module.exports.convertTextToDt= function(text) {
     } else if(stringText.includes('일')) {
         let day = stringText.replace('일 전','');
         editDate = today.setDate(today.getDate()-Number(day));
-    } else if(stringText.includes('달')) {
-        let month = stringText.replace('달 전','');
+    } else if(stringText.includes('주')) {
+        let day = stringText.replace('주 전','');
+        editDate = today.setDate(today.getDate()-Number(day)*7);
+    }  else if(stringText.includes('달') || stringText.includes('개월')) {
+        let month = stringText.replace('달 전','').replace('개월 전','');
         editDate = today.setMonth(today.getMonth()-month)
     } else if(stringText.includes('년')) {
         let year = stringText.replace('년 전','');
@@ -59,5 +67,6 @@ module.exports.convertTextToDt= function(text) {
     } else {
         return String(text).replaceAll('.','');
     }
+    today=new Date();
     return this.convertCustomDate(new Date(editDate));
 }
