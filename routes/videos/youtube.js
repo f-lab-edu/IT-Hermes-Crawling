@@ -34,10 +34,7 @@ router.get('/', async (req, res, next) => {
 const insertCustomParameterUrl = (subScribe) => {
     return `https://www.youtube.com/${subScribe}/videos`;
 }
-const responseJson = async() => {
-    return res.json(crawingData);
-}
-/* 조회 후, 응답 데이터 콜백함수 */
+
 const youtubeCallBack = async(url) => {
     const browser = await puppeteer.launch({
       headless: false
@@ -68,11 +65,9 @@ const youtubeCallBack = async(url) => {
             title:titleAndUrlList[i].attribs.title,
             url:titleAndUrlList[i].attribs.href,
             imageUrl:thumbnailList[i+1].children[1].children[0].attribs.src,
-            date:lists[(i*2)+1].children[0].data
+            date:await commonFunc.convertTextToDt(lists[(i*2)+1].children[0].data,new Date())
         })
     }
-    console.log(crawingData);
-    // 브라우저를 종료한다.
     browser.close();
     return crawingData;
 };
