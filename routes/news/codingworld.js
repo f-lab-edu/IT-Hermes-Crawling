@@ -4,6 +4,7 @@ const router = express.Router();
 const commonFunc = require('../../common');
 let request = require('request');
 let cheerio = require('cheerio');
+let v = require('voca');
 
 let crawlingData = [];
 const defaultUrl = "https://www.codingworldnews.com/";
@@ -48,7 +49,10 @@ const codingworldNewsCallback = (error, response, body)=>{
         }
         
         originalContentData.map(element => {
-            content.push($(element).text());
+            let title = $(element).text();
+            title = v.replaceAll(title,'\t','');
+            title = v.trim(title);
+            content.push(title);
         })
 
         for(let i=0; i<originalData.length; i++){
