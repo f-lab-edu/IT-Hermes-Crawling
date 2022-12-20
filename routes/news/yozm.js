@@ -38,8 +38,8 @@ function yozmCallback(error, response, body){
                 title:list[i].children[0].data,
                 url:list[i].attribs.href,
                 descript: descriptList[i].children[0].data,
-                imageUrl : imageList[i].attribs.src,
-                newsDate:newsDateList[i]
+                thumbnail : imageList[i].attribs.src,
+                date:newsDateList[i]
             })            
         }
     }

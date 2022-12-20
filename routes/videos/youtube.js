@@ -64,8 +64,9 @@ const youtubeCallBack = async(url) => {
         crawingData.push({
             title:titleAndUrlList[i].attribs.title,
             url:titleAndUrlList[i].attribs.href,
-            imageUrl:thumbnailList[i+1].children[1].children[0].attribs.src,
-            date:await commonFunc.convertTextToDt(lists[(i*2)+1].children[0].data,new Date())
+            youtuber:"@nomadcoders",
+            thumbnail:thumbnailList[i+1].children[1].children[0].attribs.src,
+            date: await commonFunc.convertTextToDt(lists[(i*2)+1].children[0].data,new Date())
         })
     }
     browser.close();
