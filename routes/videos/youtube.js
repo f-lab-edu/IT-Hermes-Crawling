@@ -1,27 +1,20 @@
 const commonFunc = require('../../common');
-const puppeteer = commonFunc.puppeteer;
-
 let request = commonFunc.request;
 let cheerio = commonFunc.cheerio;
 
+const express = commonFunc.express;
+const router = express.Router();
 
-/* DB에서 가져올 custom data*/
-/* 구독 리스트 */
-
+let crawlingData = [];
 /* 최근 크롤링한 날짜 혹은 shortenUrl */
 let lastIndex;
 /* 유튜버 정보 */
 let youtuber;
 
-const express = commonFunc.express;
-const router = express.Router();
+const defaultUrl="https://www.youtube.com/watch?v=";
 
-// 크롤링한 데이터
-let crawingData=[]; 
-const defaultUrl = "https://www.youtube.com";
-
-/* 유튜브 데이터 조회 */
-router.get('/', async (req, res, next) => {
+router.get('/', (req,res,next) => {
+    console.time('check');
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
     youtuber = req.data;
     lastIndex = req.data;
@@ -29,50 +22,49 @@ router.get('/', async (req, res, next) => {
     youtuber= "@dream-coding";
     lastIndex = "fJeGAx27-vU";
 
-    await youtubeCallBack(insertCustomParameterUrl(youtuber));
-    res.json(crawingData);
+    request(insertCustomParameterUrl(youtuber), youtubeCallback);
+    res.json(crawlingData);
+    console.timeEnd('check');
 });
 
 const insertCustomParameterUrl = (subScribe) => {
-    return `https://www.youtube.com/${subScribe}/videos`;
+    return {
+        url: `https://www.youtube.com/${subScribe}/videos`
+    };
 }
 
-const youtubeCallBack = async(url) => {
-    const browser = await puppeteer.launch({
-      headless: false
-    });
-  
-    const page = await browser.newPage();
-    await page.setViewport({
-      width: 10000,
-      height: 10000
-    });
-
-    await page.goto(url);
-
-    const content = await page.content();
-    const $ = cheerio.load(content);
-    const lists = $('.style-scope ytd-video-meta-block span');
-    const titleAndUrlList = $('.style-scope ytd-rich-grid-media h3 a');
-    const thumbnailList = $('#thumbnail');
-  
-    let size;
-    if(thumbnailList.length<30) {
-        size=thumbnailList.length;
-    } else {
-        size=30;
+const youtubeCallback = (error, response, body) => {
+    if(!error && response.statusCode == 200){
+        const $ = cheerio.load(body);
+        let entireData= $('script')[33].children[0].data;
+        /** JSON 타입으로 변환하기 위해, 불필요한 데이터 제거 */
+        entireData = String(entireData).slice(0,-1).substring(20,entireData.length);
+        /** String to JSON */
+        const jsonData = JSON.parse(entireData);
+        /** video 정보 파싱 */
+        const list = jsonData.contents.twoColumnBrowseResultsRenderer.tabs[1].tabRenderer.content.richGridRenderer.contents;
+        /** 최대 30개만 받아오게끔 처리 */
+        let size;
+        if(list.length<=30) {
+            size=list.length;
+        } else {
+            size=30;
+        }
+        insertData(size,list);
     }
+}
+
+const insertData = (size,list) => {
     for(let i=0;i<size;i++) {
-        crawingData.push({
-            title:titleAndUrlList[i].attribs.title,
-            url:titleAndUrlList[i].attribs.href,
+        const videoIdAndThumbnail = list[i].richItemRenderer.content.videoRenderer;
+        crawlingData.push({
+            title:videoIdAndThumbnail.title.runs[0].text,
+            url:defaultUrl+videoIdAndThumbnail.videoId,
             youtuber:youtuber,
-            thumbnail:thumbnailList[i+1].children[1].children[0].attribs.src,
-            date: await commonFunc.convertTextToDt(lists[(i*2)+1].children[0].data,new Date())
-        })
+            thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
+            date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
+        });            
     }
-    browser.close();
-    return crawingData;
-};
+}
 
 module.exports = router;
