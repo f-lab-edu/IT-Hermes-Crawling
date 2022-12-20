@@ -7,9 +7,11 @@ let cheerio = commonFunc.cheerio;
 
 /* DB에서 가져올 custom data*/
 /* 구독 리스트 */
-let subScribeList = [];
+
 /* 최근 크롤링한 날짜 혹은 shortenUrl */
-let last;
+let lastIndex;
+/* 유튜버 정보 */
+let youtuber;
 
 const express = commonFunc.express;
 const router = express.Router();
@@ -20,14 +22,14 @@ const defaultUrl = "https://www.youtube.com";
 
 /* 유튜브 데이터 조회 */
 router.get('/', async (req, res, next) => {
+    /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
+    youtuber = req.data;
+    lastIndex = req.data;
+    /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
+    youtuber= "@dream-coding";
+    lastIndex = "fJeGAx27-vU";
 
-    /* 임의로 데이터 삽입, 추후 DB에서 가져오는 메소드를 만들 계획 */
-    subScribeList.push("@nomadcoders");
-    last = "fJeGAx27-vU";
-
-    for(let i=0;i<subScribeList.length;i++) {
-        await youtubeCallBack(insertCustomParameterUrl(subScribeList[i]));
-    }
+    await youtubeCallBack(insertCustomParameterUrl(youtuber));
     res.json(crawingData);
 });
 
@@ -64,7 +66,7 @@ const youtubeCallBack = async(url) => {
         crawingData.push({
             title:titleAndUrlList[i].attribs.title,
             url:titleAndUrlList[i].attribs.href,
-            youtuber:"@nomadcoders",
+            youtuber:youtuber,
             thumbnail:thumbnailList[i+1].children[1].children[0].attribs.src,
             date: await commonFunc.convertTextToDt(lists[(i*2)+1].children[0].data,new Date())
         })
