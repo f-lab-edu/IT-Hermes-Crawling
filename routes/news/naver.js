@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-
 const commonFunc = require('../../common');
-let request = require('request');
-let cheerio = require('cheerio');
-let iconv = require('iconv-lite');
+
+const request = commonFunc.request;
+const cheerio = commonFunc.cheerio;
+const iconv = require('iconv-lite');
+const express = commonFunc.express;
+const router = express.Router();
 
 let crawlingData = [];
 

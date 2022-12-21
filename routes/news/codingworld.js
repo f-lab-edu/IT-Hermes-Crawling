@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-
 const commonFunc = require('../../common');
-let request = require('request');
-let cheerio = require('cheerio');
+const request = commonFunc.request;
+const cheerio = commonFunc.cheerio;
+
+const express = commonFunc.express;
+const router = express.Router();
 
 let crawlingData = [];
 const defaultUrl = "https://www.codingworldnews.com/";

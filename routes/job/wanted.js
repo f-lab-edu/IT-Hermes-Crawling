@@ -1,10 +1,10 @@
-const express = require('express');
+const commonFunc = require('../../common');
+const request = commonFunc.request;
+const cheerio = commonFunc.cheerio;
+
+const express = commonFunc.express;
 const router = express.Router();
 
-const commonFunc = require('../../common');
-const request = require('request');
-const cheerio = require('cheerio');
-const { registerCustomQueryHandler } = require('puppeteer');
 
 let crawlingData = [];
 
