@@ -60,8 +60,8 @@ function wantedCallback(error,response,body){
         for(let i=0; i<20; i++){
             crawlingData.push({
                 title: title[i],
-                companyTitle: companyTitle[i],
-                image: image[i],
+                company: companyTitle[i],
+                thumbnail: image[i],
                 location: location[i],
                 url:url[i]
             });

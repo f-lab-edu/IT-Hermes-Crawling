@@ -59,8 +59,8 @@ const codingworldNewsCallback = (error, response, body)=>{
                 title: title[i],
                 date: dates[i],
                 url: defaultUrl+url[i],
-                image: image[i],
-                content: content[i]
+                thumbnail: image[i],
+                descript: content[i]
             });
         }
     }

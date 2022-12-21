@@ -53,10 +53,10 @@ function naverNewsCallback(error, response, body){
         for(let j=0; j<originalData.length; j++){
             crawlingData.push({
                 title:title[j],
-                content:content[j],
-                image:image[j],
+                descript:content[j],
+                thumbnail:image[j],
                 url: url[j],
-                dates: convertDate(dates[j])
+                date: convertDate(dates[j])
             });
         }
 
