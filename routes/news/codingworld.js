@@ -6,18 +6,31 @@ const express = commonFunc.express;
 const router = express.Router();
 
 let crawlingData = [];
-const defaultUrl = "https://www.codingworldnews.com/";
+let requestInfo = {
+    url: "https://www.codingworldnews.com/news/articleList.html?sc_section_code=S1N2&view_type=sm"
+};
 
 router.get('/',(req,res,next) => {
-    let requestInfo = {
-        url: "https://www.codingworldnews.com/news/articleList.html?sc_section_code=S1N2&view_type=sm"
-    };
-    request(requestInfo,codingworldNewsCallback);
-    res.json(crawlingData);
-});
+    doRequest(requestInfo)
+    .then((value)=>codingworldNewsCallback(value))
+    .then(()=>{res.json(crawlingData)})
+    .catch(error=>{res.json(error)});
+})
 
-const codingworldNewsCallback = (error, response, body)=>{
-    if(!error && response.statusCode == 200){
+function doRequest(requestInfo){
+    return new Promise((resolve,reject)=>{
+        request(requestInfo,(error,response,body)=>{
+            if(!error&&response.statusCode==200){
+                resolve(body);
+            }else{
+                reject(error);
+            }
+        })
+    })
+}
+
+
+const codingworldNewsCallback = (body)=>{
         const $ = cheerio.load(body);
 
         let originalData = $('.titles a').toArray();
@@ -58,12 +71,11 @@ const codingworldNewsCallback = (error, response, body)=>{
             crawlingData.push({
                 title: title[i],
                 date: dates[i],
-                url: defaultUrl+url[i],
+                url: url[i],
                 thumbnail: image[i],
                 descript: content[i]
             });
         }
-    }
 }
 
 const convertDate = (originalDate) => {
