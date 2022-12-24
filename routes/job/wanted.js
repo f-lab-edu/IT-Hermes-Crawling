@@ -1,3 +1,4 @@
+const { json } = require('express');
 const commonFunc = require('../../common');
 const request = commonFunc.request;
 const cheerio = commonFunc.cheerio;
@@ -7,29 +8,37 @@ const router = express.Router();
 
 
 let crawlingData = [];
+let header = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'Referer': 'https://www.wanted.co.kr/'
+};
+let requestInfo = {
+    url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1',
+    headers: header
+};
 
-router.get('/',function(req,res,error){
-    let header = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-    };
-    let requestInfo = {
-        url: 'https://www.wanted.co.kr/wdlist/518?country=kr&job_sort=company.response_rate_order&years=-1&selected=873&selected=872&selected=669&selected=677&selected=678&locations=all',
-        headers: header
-    };
-    request(requestInfo,wantedCallback);
-    res.json(crawlingData);
+router.get('/',(req,res,error)=>{
+    doRequest(requestInfo)
+        .then((value)=>wantedCallback(value))
+        .then(()=>{res.json(crawlingData)})
+        .catch(error=>{res.json(error)});
 })
 
+function doRequest(requestInfo){
+    return new Promise((resolve,reject)=>{
+        request(requestInfo,(error,response,body)=>{
+            if(!error&&response.statusCode==200){
+                resolve(body);
+            }else{
+                reject(error);
+            }
+        })
+    })
+}
 
-function wantedCallback(error,response,body){
-    if(!error && response.statusCode == 200){
-        const $ = cheerio.load(body);
 
-        let originalData = $('.Card_className__u5rsb a').toArray();
-        let originalCompanyData = $('.job-card-company-name').toArray();
-        let originalLocationData = $('.job-card-company-location').toArray();
-        let originalTitleData = $('.job-card-position').toArray();
-        let originalImageData = $('.Card_className__u5rsb header').toArray();
+const wantedCallback = (body)=>{
+        body = JSON.parse(body);
 
         let title = [];
         let companyTitle = [];
@@ -37,25 +46,14 @@ function wantedCallback(error,response,body){
         let url = [];
         let location = [];
 
-        for(let i=0; i<originalData.length; i++){
-            url.push(originalData[i].attribs.href);
+        for(let i=0; i<body.data.length; i++){
+            companyTitle.push(body.data[i].company.name);
+            image.push(body.data[i].title_img.thumb);
+            location.push(body.data[i].address.location);
+            title.push(body.data[i].position);
+            url.push('/wd/'+body.data[i].id);
         }
 
-        for(let i=0; i<originalImageData.length; i++){
-            image.push(originalImageData[i].attribs.style);
-        }
-
-        originalCompanyData.map(element => {
-            companyTitle.push($(element).text());
-        })
-
-        originalLocationData.map(element=>{
-            location.push($(element).text());
-        })
-        
-        originalTitleData.map(element=>{
-            title.push($(element).text());
-        })
 
         for(let i=0; i<20; i++){
             crawlingData.push({
@@ -66,7 +64,6 @@ function wantedCallback(error,response,body){
                 url:url[i]
             });
         }
-    }
 
 }
 
