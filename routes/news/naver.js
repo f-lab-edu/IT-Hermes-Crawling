@@ -1,24 +1,37 @@
-const express = require('express');
+const commonFunc = require('../../common');
+
+const request = commonFunc.request;
+const cheerio = commonFunc.cheerio;
+const iconv = require('iconv-lite');
+const express = commonFunc.express;
 const router = express.Router();
 
-const commonFunc = require('../../common');
-let request = require('request');
-let cheerio = require('cheerio');
-let iconv = require('iconv-lite');
-
 let crawlingData = [];
+let requestInfo = {
+    url: "https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283",
+    encoding: null
+};
 
-router.get('/',function(req,res,next){
-    let requestInfo = {
-        url: "https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283",
-        encoding: null
-    };
-    request(requestInfo,naverNewsCallback);
-    res.json(crawlingData);
+router.get('/',(req,res,next)=>{
+    doRequest(requestInfo)
+    .then((value)=>naverNewsCallback(value))
+    .then(()=>{res.json(crawlingData)})
+    .catch(error=>res.json(error));
 })
 
-function naverNewsCallback(error, response, body){
-    if(!error && response.statusCode == 200){
+function doRequest(requestInfo){
+    return new Promise((resolve,reject)=>{
+        request(requestInfo,(error,response,body)=>{
+            if(!error&&response.statusCode==200){
+                resolve(body);
+            }else{
+                reject(error);
+            }
+        })
+    })
+}
+
+function naverNewsCallback(body){
         const entireData = iconv.decode(body,"EUC-KR").toString();
         const $ = cheerio.load(entireData);
 
@@ -50,21 +63,19 @@ function naverNewsCallback(error, response, body){
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let j=0; j<originalData.length; j++){
+        for(let j=0; j<14; j++){
             crawlingData.push({
                 title:title[j],
-                content:content[j],
-                image:image[j],
+                descript:content[j],
+                thumbnail:image[j],
                 url: url[j],
-                dates: convertDate(dates[j])
+                date: convertDate(dates[j])
             });
         }
-
-    }
 }
 
 const convertDate = (originalDate) => {
-    originalDate = originalDate.replace(/\t/,'');
+    originalDate = originalDate.replace(/[\t]/g,"");
     let changedDate;
     
     if(originalDate[originalDate.length-1]=='전'){
