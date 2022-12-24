@@ -8,6 +8,8 @@ module.exports.express = require('express');
 module.exports.cheerio = require('cheerio');
 /* puppeteer 라이브러리 */
 module.exports.puppeteer = require('puppeteer');
+/* axios 라이브러리 */
+module.exports.axios = require('axios');
 
 /*  현재 일자(yyyymmdd) */
 module.exports.todayDate= function() {
