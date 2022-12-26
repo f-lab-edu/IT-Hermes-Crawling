@@ -10,8 +10,6 @@ let lastIndex;
 /* 유튜버 정보 */
 let youtuber;
 
-const defaultUrl="https://www.youtube.com/watch?v=";
-
 router.get('/', (req,res,next) => {
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
     youtuber = req.data;
@@ -52,7 +50,7 @@ const youtubeResponseData = (list) => {
         const videoIdAndThumbnail = list[i].richItemRenderer.content.videoRenderer;
         crawlingList.push({
             title:videoIdAndThumbnail.title.runs[0].text,
-            url:defaultUrl+videoIdAndThumbnail.videoId,
+            url:videoIdAndThumbnail.videoId,
             youtuber:youtuber,
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
             date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
