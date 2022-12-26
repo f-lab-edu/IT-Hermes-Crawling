@@ -1,6 +1,6 @@
 const commonFunc = require('../../common');
 
-const request = commonFunc.request;
+const axios = commonFunc.axios;
 const cheerio = commonFunc.cheerio;
 const iconv = require('iconv-lite');
 const express = commonFunc.express;
@@ -8,28 +8,21 @@ const router = express.Router();
 
 let crawlingData = [];
 let requestInfo = {
-    url: "https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283",
+    url: `https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283`,
     encoding: null
 };
 
 router.get('/',(req,res,next)=>{
-    doRequest(requestInfo)
-    .then((value)=>naverNewsCallback(value))
-    .then(()=>{res.json(crawlingData)})
-    .catch(error=>res.json(error));
-})
 
-function doRequest(requestInfo){
-    return new Promise((resolve,reject)=>{
-        request(requestInfo,(error,response,body)=>{
-            if(!error&&response.statusCode==200){
-                resolve(body);
-            }else{
-                reject(error);
-            }
-        })
+    axios(requestInfo)
+    .then((response)=>{ 
+        res.json(naverNewsCallback(response.data));
     })
-}
+    .catch((error)=>{
+        res.json(error);
+    })
+
+})
 
 function naverNewsCallback(body){
         const entireData = iconv.decode(body,"EUC-KR").toString();
@@ -72,6 +65,7 @@ function naverNewsCallback(body){
                 date: convertDate(dates[j])
             });
         }
+        return crawlingData;
 }
 
 const convertDate = (originalDate) => {

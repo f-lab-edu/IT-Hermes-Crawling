@@ -1,11 +1,9 @@
-const { json } = require('express');
 const commonFunc = require('../../common');
-const request = commonFunc.request;
-const cheerio = commonFunc.cheerio;
 
+const axios = commonFunc.axios;
+const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
-
 
 let crawlingData = [];
 let header = {
@@ -14,31 +12,23 @@ let header = {
 };
 let requestInfo = {
     url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1',
-    headers: header
+    headers : header
 };
 
 router.get('/',(req,res,error)=>{
-    doRequest(requestInfo)
-        .then((value)=>wantedCallback(value))
-        .then(()=>{res.json(crawlingData)})
-        .catch(error=>{res.json(error)});
-})
 
-function doRequest(requestInfo){
-    return new Promise((resolve,reject)=>{
-        request(requestInfo,(error,response,body)=>{
-            if(!error&&response.statusCode==200){
-                resolve(body);
-            }else{
-                reject(error);
-            }
-        })
+    axios(requestInfo)
+    .then((response)=>{
+        res.json(wantedCallback(response.data));
     })
-}
+    .catch((error)=>{
+        res.json(error);
+    })
+
+})
 
 
 const wantedCallback = (body)=>{
-        body = JSON.parse(body);
 
         let title = [];
         let companyTitle = [];
@@ -64,6 +54,7 @@ const wantedCallback = (body)=>{
                 url:url[i]
             });
         }
+        return crawlingData;
 
 }
 

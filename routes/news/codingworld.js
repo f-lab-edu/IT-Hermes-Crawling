@@ -1,7 +1,7 @@
 const commonFunc = require('../../common');
-const request = commonFunc.request;
-const cheerio = commonFunc.cheerio;
 
+const axios = commonFunc.axios;
+const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 
@@ -11,23 +11,16 @@ let requestInfo = {
 };
 
 router.get('/',(req,res,next) => {
-    doRequest(requestInfo)
-    .then((value)=>codingworldNewsCallback(value))
-    .then(()=>{res.json(crawlingData)})
-    .catch(error=>{res.json(error)});
-})
 
-function doRequest(requestInfo){
-    return new Promise((resolve,reject)=>{
-        request(requestInfo,(error,response,body)=>{
-            if(!error&&response.statusCode==200){
-                resolve(body);
-            }else{
-                reject(error);
-            }
-        })
+    axios(requestInfo)
+    .then((response)=>{
+        res.json(codingworldNewsCallback(response.data));
     })
-}
+    .catch((error)=>{
+        res.json(error);
+    })
+
+})
 
 
 const codingworldNewsCallback = (body)=>{
@@ -76,6 +69,7 @@ const codingworldNewsCallback = (body)=>{
                 descript: content[i]
             });
         }
+        return crawlingData;
 }
 
 const convertDate = (originalDate) => {
