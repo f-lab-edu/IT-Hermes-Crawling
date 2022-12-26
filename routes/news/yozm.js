@@ -5,15 +5,18 @@ let cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 
-const options = {
-    url: 'https://yozm.wishket.com/magazine/list/develop/',
-};
 
 router.get('/', (req,res,next) => {
-    axios(options.url)
+    /** page 기준 정할 시, 동적으로 변환(메소드 사용 예정) */
+    let page = "1";
+    axios(requestYozmParameter(page))
          .then(response => res.json(responseYozmData(response.data)))
-         .catch(error => res.text(new Error(error)));
+         .catch(error => res.json(error));
 })
+
+const requestYozmParameter = (page) => {
+    return `https://yozm.wishket.com/magazine/list/develop/?page=${page}&q=`;
+}
 
 const responseYozmData = (body) => {
     const $ = cheerio.load(body);

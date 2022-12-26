@@ -30,13 +30,16 @@ router.get('/', (req, res, next) => {
     let endExp="7";
     let isCheckExp="2";
     let isCheckNonExp="";
+    /** 맨 처음 데이터를 가져올 때, 어느정도까지 데이터를 가져올지 기준 설정 필요! */
+    let page="1";
     axios('https://www.saramin.co.kr/zf_user/jobs/list/job-category'
-    ,{params: requestSaraminParameter(developmentField,isCheckExp,startExp,endExp,isCheckNonExp)})
+    ,{params: requestSaraminParameter(page,developmentField,isCheckExp,startExp,endExp,isCheckNonExp)})
          .then(response => res.json(responseSaraminData(response.data)))
-         .catch(error => res.text(new Error(error)));
+         .catch(error => res.json(error));
 });
-const requestSaraminParameter = (developmentField, isCheckExp, startExp, endExp, isCheckNonExp) => {
+const requestSaraminParameter = (page, developmentField, isCheckExp, startExp, endExp, isCheckNonExp) => {
     return {
+        'page': `${page}`,
         'cat_kewd': `${developmentField}`,
         'edu_min': '8',
         'edu_max': '11',

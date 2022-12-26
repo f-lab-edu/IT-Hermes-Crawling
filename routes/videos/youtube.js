@@ -21,7 +21,7 @@ router.get('/', (req,res,next) => {
     lastIndex = "fJeGAx27-vU";
     axios(options(youtuber))
         .then(response => res.json(youtubeResponseData(parseYoutubeVideoList(response.data))))
-        .catch(error => res.text(new Error(error)));
+        .catch(error => res.json(error));
     
 });
 
