@@ -9,7 +9,7 @@ const router = express.Router();
 let crawlingData = [];
 let requestInfo = {
     url: `https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283`,
-    encoding: null
+    responseType: "arraybuffer"
 };
 
 router.get('/',(req,res,next)=>{
