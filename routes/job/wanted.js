@@ -6,13 +6,9 @@ const express = commonFunc.express;
 const router = express.Router();
 
 let crawlingData = [];
-let header = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-        'Referer': 'https://www.wanted.co.kr/'
-};
+
 let requestInfo = {
-    url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1',
-    headers : header
+    url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1'
 };
 
 router.get('/',(req,res,error)=>{
@@ -26,7 +22,6 @@ router.get('/',(req,res,error)=>{
     })
 
 })
-
 
 const wantedCallback = (body)=>{
 
