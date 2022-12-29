@@ -24,14 +24,15 @@ router.get('/',(req,res,next)=>{
 
 })
 
-function naverNewsCallback(body){
+const naverNewsCallback = (body)=>{
         const entireData = iconv.decode(body,"EUC-KR").toString();
         const $ = cheerio.load(entireData);
 
         let originalContentData = $('.lede').toArray();
         let originalData = $('.photo a img');
         let originalUrlData = $('.photo a');
-        let originalDateData = $('.date.is_outdated').toArray();
+        let originalDateData1 = $('.date.is_new').toArray();
+        let originalDateData2 = $('.date.is_outdated').toArray();
 
         let title = [];
         let image = [];
@@ -39,7 +40,11 @@ function naverNewsCallback(body){
         let url = [];
         let dates = [];
 
-        originalDateData.map(element => {
+        originalDateData1.map(element => {
+            dates.push($(element).text());
+        });
+
+        originalDateData2.map(element => {
             dates.push($(element).text());
         });
     
@@ -56,38 +61,16 @@ function naverNewsCallback(body){
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let j=0; j<14; j++){
+        for(let j=0; j<originalContentData.length; j++){
             crawlingData.push({
                 title:title[j],
                 descript:content[j],
                 thumbnail:image[j],
                 url: url[j],
-                date: convertDate(dates[j])
+                date: commonFunc.convertTextToDt(dates[j])
             });
         }
         return crawlingData;
 }
-
-const convertDate = (originalDate) => {
-    originalDate = originalDate.replace(/[\t]/g,"");
-    let changedDate;
-    
-    if(originalDate[originalDate.length-1]=='전'){
-        let base = originalDate.replace(/[0-9]/g,"");
-        if(base=="시간전" || base=="분전"){
-            changedDate = commonFunc.todayDate();
-        }else{
-            let num = originalDate[0];
-            const today = new Date();
-           changedDate = commonFunc.customCurrentYearMonthAndDay(today.getMonth()+1,today.getDate()-num);
-        }
-    }else{
-        let date = originalDate.substring(0,10);
-        date = date.replace(".","");
-        date = date.replace(".","");
-        changedDate = date;
-    }
-    return changedDate;
-};
 
 module.exports = router;
