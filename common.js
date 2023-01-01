@@ -46,26 +46,61 @@ module.exports.createNowDate=() => {
 module.exports.convertTextToDt= function(text) {
     let stringText = String(text);
     if(stringText.includes('초')) {
-        let seconds = stringText.replace('초 전','');
+        let seconds="";
+        if(stringText.includes('초 전')){
+            seconds = stringText.replace('초 전','');
+        }else{
+            seconds = stringText.replace('초전','');
+        }
         editDate = today.setSeconds(today.getSeconds()-Number(seconds));
     } else if(stringText.includes('분')) {
-        let minutes = stringText.replace('분 전','');
+        let minutes="";
+        if(stringText.includes('분 전')){
+            minutes = stringText.replace('분 전','');
+        }else{
+            minutes = stringText.replace('분전','');
+        }
         editDate = today.setMinutes(today.getMinutes()-Number(minutes));
     } else if(stringText.includes('시간')) {
-        let hours = stringText.replace('시간 전','');
+        let hours="";
+        if(stringText.includes('시간 전')){
+            hours = stringText.replace('시간 전','');
+        }else{
+            hours = stringText.replace('시간전','');
+        }
         editDate = today.setHours(today.getHours()-Number(hours));
     } else if(stringText.includes('일')) {
-        let day = stringText.replace('일 전','');
+        let day="";
+        if(stringText.includes('일 전')){
+            day = stringText.replace('일 전','');
+        }else{
+            day = stringText.replace('일전','');
+        }
         editDate = today.setDate(today.getDate()-Number(day));
     } else if(stringText.includes('주')) {
-        let day = stringText.replace('주 전','');
+        let day="";
+        if(stringText.includes('주 전')){
+            day = stringText.replace('주 전','');
+        }else{
+            day = stringText.replace('주전','');
+        }
         editDate = today.setDate(today.getDate()-Number(day)*7);
     }  else if(stringText.includes('달') || stringText.includes('개월')) {
-        let month = stringText.replace('달 전','').replace('개월 전','');
-        editDate = today.setMonth(today.getMonth()-month)
+        let month="";
+        if(stringText.includes('주 전')){
+            month = stringText.replace('달 전','').replace('개월 전','');
+        }else{
+            month = stringText.replace('달전','').replace('개월전','');
+        }
+        editDate = today.setMonth(today.getMonth()-month);
     } else if(stringText.includes('년')) {
-        let year = stringText.replace('년 전','');
-        editDate = today.setFullYear(today.getFullYear()-year)
+        let year="";
+        if(stringText.includes('년 전')){
+            year = stringText.replace('년 전','');
+        }else{
+            year = stringText.replace('년전','');
+        }
+        editDate = today.setFullYear(today.getFullYear()-year);
     } else {
         return String(text).replaceAll('.','');
     }

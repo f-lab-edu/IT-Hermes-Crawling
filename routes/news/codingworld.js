@@ -27,7 +27,7 @@ const codingworldNewsCallback = (body)=>{
         const $ = cheerio.load(body);
 
         let originalData = $('.titles a').toArray();
-        let originalDateData = $('.byline').find('em:eq(2)').toArray();
+        let originalDateData = $('span em:nth-child(3)').toArray();
         let originalImageData = $('.type2 img');
         let originalContentData = $('.lead.line-6x2 a').toArray();
 
@@ -60,7 +60,7 @@ const codingworldNewsCallback = (body)=>{
             content.push(title);
         })
 
-        for(let i=0; i<originalData.length; i++){
+        for(let i=0; i<originalDateData.length-1; i++){
             crawlingData.push({
                 title: title[i],
                 date: dates[i],
