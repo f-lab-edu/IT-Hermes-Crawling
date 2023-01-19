@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.get('/', (req,res,next) => {
-    console.log("실행");
+
     /** page 기준 정할 시, 동적으로 변환(메소드 사용 예정) */
     let page = "1";
     axios(requestYozmParameter(page))
