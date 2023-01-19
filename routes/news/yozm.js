@@ -7,6 +7,7 @@ const router = express.Router();
 
 
 router.get('/', (req,res,next) => {
+    console.log("실행");
     /** page 기준 정할 시, 동적으로 변환(메소드 사용 예정) */
     let page = "1";
     axios(requestYozmParameter(page))
@@ -38,9 +39,9 @@ const responseYozmData = (body) => {
     for(let i=0;i<list.length;i++) {
         crawlingList.push({
             title:list[i].children[0].data,
-            url:list[i].attribs.href,
-            descript: descriptList[i].children[0].data,
+            description: descriptList[i].children[0].data,
             thumbnail : imageList[i].attribs.src,
+            url:list[i].attribs.href,
             date:newsDateList[i]
         })            
     }
