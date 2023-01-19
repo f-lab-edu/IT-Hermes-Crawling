@@ -64,7 +64,7 @@ const naverNewsCallback = (body)=>{
         for(let j=0; j<originalContentData.length; j++){
             crawlingData.push({
                 title:title[j],
-                descript:content[j],
+                description:content[j],
                 thumbnail:image[j],
                 url: url[j],
                 date: commonFunc.convertTextToDt(dates[j])

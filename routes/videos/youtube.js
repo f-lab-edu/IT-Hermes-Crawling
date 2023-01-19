@@ -9,15 +9,18 @@ const router = express.Router();
 let lastIndex;
 /* 유튜버 정보 */
 let youtuber;
+/* 유튜버 Url 정보 */
+let youtuberUrl;
 
 router.get('/', (req,res,next) => {
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
     youtuber = req.data;
     lastIndex = req.data;
     /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
-    youtuber= "@dream-coding";
+    youtuberUrl= "@dream-coding";
+    youtuber= "DREAM_CODING";
     lastIndex = "fJeGAx27-vU";
-    axios(options(youtuber))
+    axios(options(youtuberUrl))
         .then(response => res.json(youtubeResponseData(parseYoutubeVideoList(response.data))))
         .catch(error => res.json(error));
     
@@ -50,9 +53,9 @@ const youtubeResponseData = (list) => {
         const videoIdAndThumbnail = list[i].richItemRenderer.content.videoRenderer;
         crawlingList.push({
             title:videoIdAndThumbnail.title.runs[0].text,
-            url:videoIdAndThumbnail.videoId,
-            youtuber:youtuber,
+            description:youtuber,
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
+            url:"/"+videoIdAndThumbnail.videoId,
             date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
         });            
     }

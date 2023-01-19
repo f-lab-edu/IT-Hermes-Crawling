@@ -23,9 +23,10 @@ module.exports.tomorrowDate= function() {
 module.exports.customCurrentYearMonthAndDay= function(month, day) {
     return String(today.getFullYear())+String(month).padStart(2,'0')+String(day).padStart(2,'0')
 }
-/* custom 일시를 일자로(yyyymmdd) 변경 */
+/* custom 일시를 일자로(yyyy-MM-dd HH:mm:ss) 변경 */
 module.exports.convertCustomDate= function(date) {
-    return String(date.getFullYear())+String(date.getMonth()+1).padStart(2,'0')+String(('0' + date.getDate()).slice(-2));
+    return String(date.getFullYear())+"-"+String(date.getMonth()+1).padStart(2,'0')+"-"+String(('0' + date.getDate()).slice(-2))
+    +" "+String(date.getHours())+":"+String(date.getMinutes())+":"+String(date.getSeconds());
 }
 
 /* 인자 값이 존재하는 체크하는 함수 */
