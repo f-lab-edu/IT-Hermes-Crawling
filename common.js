@@ -26,7 +26,7 @@ module.exports.customCurrentYearMonthAndDay= function(month, day) {
 /* custom 일시를 일자로(yyyy-MM-dd HH:mm:ss) 변경 */
 module.exports.convertCustomDate= function(date) {
     return String(date.getFullYear())+"-"+String(date.getMonth()+1).padStart(2,'0')+"-"+String(('0' + date.getDate()).slice(-2))
-    +" "+String(date.getHours())+":"+String(date.getMinutes())+":"+String(date.getSeconds());
+    +" "+String(date.getHours()).padStart(2,'0')+":"+String(date.getMinutes()).padStart(2,'0')+":"+String(date.getSeconds()).padStart(2,'0');
 }
 
 /* 인자 값이 존재하는 체크하는 함수 */
@@ -103,7 +103,8 @@ module.exports.convertTextToDt= function(text) {
         }
         editDate = today.setFullYear(today.getFullYear()-year);
     } else {
-        return String(text).replaceAll('.','');
+        let editDate = String(text).split('.');
+        return editDate[0]+"-"+editDate[1]+"-"+editDate[2]+" "+"00:00:00";
     }
     today=new Date();
     return this.convertCustomDate(new Date(editDate));
