@@ -14,12 +14,13 @@ let youtuberUrl;
 
 router.get('/', (req,res,next) => {
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
-    youtuber = req.data;
-    lastIndex = req.data;
+    let params = req.params;
+    lastUrl = req.query.url;
+    youtuber= req.query.youtuber;
+    youtuberUrl= req.query.contentsProvider;
     /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
-    youtuberUrl= "@dream-coding";
-    youtuber= "DREAM_CODING";
-    lastIndex = "fJeGAx27-vU";
+    
+    
     axios(options(youtuberUrl))
         .then(response => res.json(youtubeResponseData(parseYoutubeVideoList(response.data))))
         .catch(error => res.json(error));
@@ -51,9 +52,10 @@ const youtubeResponseData = (list) => {
     let crawlingList = [];
     for(let i=0;i<size;i++) {
         const videoIdAndThumbnail = list[i].richItemRenderer.content.videoRenderer;
+        if("/"+videoIdAndThumbnail.videoId==lastUrl) break;
         crawlingList.push({
             title:videoIdAndThumbnail.title.runs[0].text,
-            description:youtuber,
+            description:youtuberUrl,
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
             url:"/"+videoIdAndThumbnail.videoId,
             date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
