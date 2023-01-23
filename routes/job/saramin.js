@@ -4,7 +4,7 @@ let cheerio = commonFunc.cheerio;
 
 const express = commonFunc.express;
 const router = express.Router();
-
+let lastUrl;
 /* response Data 
 1. 제목
 2. 채용공고명
@@ -20,32 +20,35 @@ router.get('/', (req, res, next) => {
     2. 마지막 조회 sequence or title
     3. 직무정보 가져오기(프론트,백엔드,모바일) 리스트형태로 받는다고 가정
     */
-    /** isCheckExp(경력여부) : 신입일 땐 '1' 경력 + 신입 시 '1%2C2', 경력 시 '2' */
-    /** startExp(경력시작년차) : 포함 시 'y' 안할 시 '' */
-    /** endExp(경력종료년차) : 백엔드(84) 모바일(86) 프론트(87) 모두 선택 시 '%2C를 가운데에 삽입 */
+    /** startExp(경력시작년차)*/
+    /** endExp(경력종료년차) */
+    /** cat_kewd(직무) : 백엔드(84) 모바일(86) 프론트(92)) */
     /** isCheckNonExp(경력무관 처리) : 포함 시 'y' 안할 시 '' */
-    let developmentField="87";
-    let startExp="1";
-    let endExp="7";
-    let isCheckExp="2";
-    let isCheckNonExp="";
+    let job=req.query.job;
+    let startExp=req.query.minExperience;
+    let endExp=req.query.maxExperience;
+    lastUrl=req.query.url;
+    let developmentField;
+    if(job=="BACKEND") {
+        developmentField=84;
+    } else if(job=="MOBILE") {
+        developmentField=86;
+    } else {
+        developmentField=92
+    }
     /** 맨 처음 데이터를 가져올 때, 어느정도까지 데이터를 가져올지 기준 설정 필요! */
-    let page="1";
     axios('https://www.saramin.co.kr/zf_user/jobs/list/job-category'
-    ,{params: requestSaraminParameter(page,developmentField,isCheckExp,startExp,endExp,isCheckNonExp)})
+    ,{params: requestSaraminParameter(developmentField,startExp,endExp)})
          .then(response => res.json(responseSaraminData(response.data)))
          .catch(error => res.json(error));
 });
-const requestSaraminParameter = (page, developmentField, isCheckExp, startExp, endExp, isCheckNonExp) => {
+const requestSaraminParameter = (developmentField, startExp, endExp) => {
     return {
-        'page': `${page}`,
         'cat_kewd': `${developmentField}`,
         'edu_min': '8',
         'edu_max': '11',
         'exp_min':`${startExp}`,
-        'exp_cd':`${isCheckExp}`,
-        'exp_min':`${endExp}`,
-        'exp_none':`${isCheckNonExp}`
+        'exp_max':`${endExp}`
     }
 }
 const responseSaraminData = (body) => {
@@ -61,6 +64,7 @@ const responseSaraminData = (body) => {
 
     let crawlingList=[];
     for(let i=0;i<titleList.length;i++) {
+        if(lastUrl==urlAndCompanyList[i].attribs.href) break;
         crawlingList.push({
             company:urlAndCompanyList[i].attribs.title,
             title:titleList[i].attribs.title,
@@ -81,7 +85,7 @@ const convertEndDate = (endText) => {
     } else if(endText=="내일마감") {
         endDate=commonFunc.tomorrowDate();
     } else if(endText=="상시채용" || endText=="채용시") {
-        endDate="99991231";
+        endDate="9999-12-31-00-00-00";
     } else {
         endDate=endText.substring(0,endText.length-3).replace('~ ','').split('/');
         endDate=commonFunc.customCurrentYearMonthAndDay(endDate[0],endDate[1]);

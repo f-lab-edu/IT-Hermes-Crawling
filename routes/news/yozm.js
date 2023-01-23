@@ -4,19 +4,21 @@ let cheerio = commonFunc.cheerio;
 
 const express = commonFunc.express;
 const router = express.Router();
-
+let lastUrl;
+const defaultUrl = "https://yozm.wishket.com";
 
 router.get('/', (req,res,next) => {
 
     /** page 기준 정할 시, 동적으로 변환(메소드 사용 예정) */
-    let page = "1";
-    axios(requestYozmParameter(page))
+    lastUrl = req.query.url;
+
+    axios(requestYozmParameter())
          .then(response => res.json(responseYozmData(response.data)))
          .catch(error => res.json(error));
 })
 
-const requestYozmParameter = (page) => {
-    return `https://yozm.wishket.com/magazine/list/develop/?page=${page}&q=`;
+const requestYozmParameter = () => {
+    return `https://yozm.wishket.com/magazine/list/develop/?page=1&q=`;
 }
 
 const responseYozmData = (body) => {
@@ -37,10 +39,11 @@ const responseYozmData = (body) => {
         }
     }
     for(let i=0;i<list.length;i++) {
+        if(list[i].attribs.href==lastUrl) break;
         crawlingList.push({
             title:list[i].children[0].data,
             description: descriptList[i].children[0].data,
-            thumbnail : imageList[i].attribs.src,
+            thumbnail : defaultUrl+imageList[i].attribs.src,
             url:list[i].attribs.href,
             date:newsDateList[i]
         })            

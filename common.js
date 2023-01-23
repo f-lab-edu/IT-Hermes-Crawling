@@ -13,20 +13,20 @@ module.exports.axios = require('axios');
 
 /*  현재 일자(yyyymmdd) */
 module.exports.todayDate= function() {
-    return String(today.getFullYear())+String(today.getMonth()+1).padStart(2,'0')+String(('0' + today.getDate()).slice(-2));
+    return String(today.getFullYear())+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(('0' + today.getDate()).slice(-2))+"-00-00-00";
 }
 /*  내일 일자(yyyymmdd) */
 module.exports.tomorrowDate= function() {
-    return String(today.getFullYear())+String(today.getMonth()+1).padStart(2,'0')+String(('0' + today.getDate()+1).slice(-2));
+    return String(today.getFullYear())+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(('0' + today.getDate()+1).slice(-2))+"-00-00-00";
 }
 /*  현재 년도이지만, 달과 일 데이터는 외부에서 파라미터로 가져오는 일자함수(yyyymmdd) */
 module.exports.customCurrentYearMonthAndDay= function(month, day) {
-    return String(today.getFullYear())+String(month).padStart(2,'0')+String(day).padStart(2,'0')
+    return String(today.getFullYear())+"-"+String(month).padStart(2,'0')+"-"+String(day).padStart(2,'0')+"-00-00-00";
 }
-/* custom 일시를 일자로(yyyy-MM-dd HH:mm:ss) 변경 */
+/* custom 일시를 일자로(yyyy-MM-dd-HH-mm-ss) 변경 */
 module.exports.convertCustomDate= function(date) {
     return String(date.getFullYear())+"-"+String(date.getMonth()+1).padStart(2,'0')+"-"+String(('0' + date.getDate()).slice(-2))
-    +" "+String(date.getHours()).padStart(2,'0')+":"+String(date.getMinutes()).padStart(2,'0')+":"+String(date.getSeconds()).padStart(2,'0');
+    +"-"+String(date.getHours()).padStart(2,'0')+"-"+String(date.getMinutes()).padStart(2,'0')+"-"+String(date.getSeconds()).padStart(2,'0');
 }
 
 /* 인자 값이 존재하는 체크하는 함수 */
@@ -88,11 +88,8 @@ module.exports.convertTextToDt= function(text) {
         editDate = today.setDate(today.getDate()-Number(day)*7);
     }  else if(stringText.includes('달') || stringText.includes('개월')) {
         let month="";
-        if(stringText.includes('주 전')){
-            month = stringText.replace('달 전','').replace('개월 전','');
-        }else{
-            month = stringText.replace('달전','').replace('개월전','');
-        }
+        month = stringText.replace('달전','').replace('달 전','').replace('개월 전','').replace('개월전','');
+
         editDate = today.setMonth(today.getMonth()-month);
     } else if(stringText.includes('년')) {
         let year="";
@@ -104,7 +101,7 @@ module.exports.convertTextToDt= function(text) {
         editDate = today.setFullYear(today.getFullYear()-year);
     } else {
         let editDate = String(text).split('.');
-        return editDate[0]+"-"+editDate[1]+"-"+editDate[2]+" "+"00:00:00";
+        return editDate[0]+"-"+editDate[1]+"-"+editDate[2]+"-"+"00-00-00";
     }
     today=new Date();
     return this.convertCustomDate(new Date(editDate));
