@@ -36,7 +36,7 @@ const wantedCallback = (body)=>{
             image.push(body.data[i].title_img.thumb);
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
-            url.push('/wd/'+body.data[i].id);
+            url.push('https://www.wanted.co.kr/'+'wd/'+body.data[i].id);
         }
 
 

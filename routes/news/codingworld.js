@@ -64,7 +64,7 @@ const codingworldNewsCallback = (body)=>{
             crawlingData.push({
                 title: title[i],
                 date: dates[i],
-                url: url[i],
+                url: 'https://www.codingworldnews.com'+url[i],
                 thumbnail: image[i],
                 descript: content[i]
             });
