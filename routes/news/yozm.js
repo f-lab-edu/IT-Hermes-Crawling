@@ -39,7 +39,7 @@ const responseYozmData = (body) => {
         }
     }
     for(let i=0;i<list.length;i++) {
-        if(list[i].attribs.href==lastUrl) break;
+        if(defaultUrl+list[i].attribs.href==lastUrl) break;
         crawlingList.push({
             title:list[i].children[0].data,
             description: descriptList[i].children[0].data,
