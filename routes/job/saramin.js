@@ -5,6 +5,7 @@ let cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 let lastUrl;
+const defaultUrl = 'https://www.saramin.co.kr';
 /* response Data 
 1. 제목
 2. 채용공고명
@@ -64,11 +65,11 @@ const responseSaraminData = (body) => {
 
     let crawlingList=[];
     for(let i=0;i<titleList.length;i++) {
-        if(lastUrl==urlAndCompanyList[i].attribs.href) break;
+        if(lastUrl==defaultUrl+urlAndCompanyList[i].attribs.href) break;
         crawlingList.push({
             company:urlAndCompanyList[i].attribs.title,
             title:titleList[i].attribs.title,
-            url:urlAndCompanyList[i].attribs.href,
+            url:defaultUrl+urlAndCompanyList[i].attribs.href,
             location:locationList[i].children[0].data,
             startDate:commonFunc.todayDate(),
             endDate:convertEndDate(endDateList[i].children[0].data)

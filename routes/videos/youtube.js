@@ -4,7 +4,7 @@ let cheerio = commonFunc.cheerio;
 
 const express = commonFunc.express;
 const router = express.Router();
-
+const defaultUrl = 'https://www.youtube.com/watch?v=';
 /* 최근 크롤링한 날짜 혹은 shortenUrl */
 let lastIndex;
 /* 유튜버 정보 */
@@ -52,12 +52,12 @@ const youtubeResponseData = (list) => {
     let crawlingList = [];
     for(let i=0;i<size;i++) {
         const videoIdAndThumbnail = list[i].richItemRenderer.content.videoRenderer;
-        if("/"+videoIdAndThumbnail.videoId==lastUrl) break;
+        if(defaultUrl+videoIdAndThumbnail.videoId==lastUrl) break;
         crawlingList.push({
             title:videoIdAndThumbnail.title.runs[0].text,
             description:youtuberUrl,
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
-            url:"/"+videoIdAndThumbnail.videoId,
+            url:defaultUrl+videoIdAndThumbnail.videoId,
             date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
         });            
     }

@@ -44,7 +44,7 @@ const responseYozmData = (body) => {
             title:list[i].children[0].data,
             description: descriptList[i].children[0].data,
             thumbnail : defaultUrl+imageList[i].attribs.src,
-            url:list[i].attribs.href,
+            url:defaultUrl+list[i].attribs.href,
             date:newsDateList[i]
         })            
     }
