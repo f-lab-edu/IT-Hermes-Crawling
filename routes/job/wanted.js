@@ -58,14 +58,12 @@ const wantedCallback = (body)=>{
 
         let title = [];
         let companyTitle = [];
-        let image = [];
         let url = [];
         let location = [];
         let endDate = [];
 
         for(let i=0; i<body.data.length; i++){
             companyTitle.push(body.data[i].company.name);
-            image.push(body.data[i].title_img.thumb);
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
             url.push('https://www.wanted.co.kr/'+'wd/'+body.data[i].id);
@@ -75,11 +73,12 @@ const wantedCallback = (body)=>{
 
         for(let i=0; i<20; i++){
             crawlingData.push({
-                title: title[i],
                 company: companyTitle[i],
-                thumbnail: image[i],
+                title: title[i],
+                url:url[i],
                 location: location[i],
-                url:url[i]
+                startDate: commonFunc.todayDate(),
+                endDate: endDate[i]
             });
         }
         return crawlingData;
