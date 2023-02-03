@@ -8,12 +8,29 @@ const router = express.Router();
 let crawlingData = [];
 
 let requestInfo = {
-    url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1'
+    url: 'https://www.wanted.co.kr/api/v4/jobs'
 };
 
 router.get('/',(req,res,error)=>{
+    let job = req.query.job;
 
-    axios(requestInfo)
+    let startExp = req.query.minExperience;
+    let endExp = req.query.maxExperience;
+    let developmentField1;
+    let developmentField2;
+
+    if(job=="BACKEND"){
+        developmentField1=872;
+        developmentField2=895;
+    }else if(job=="FRONTEND"){
+        developmentField1=669;
+        developmentField2=669;
+    }else{
+        developmentField1=677;
+        developmentField2=678;
+    }
+
+    axios(requestInfo,customParams(developmentField1,developmentField2,startExp,endExp))
     .then((response)=>{
         res.json(wantedCallback(response.data));
     })
@@ -23,6 +40,20 @@ router.get('/',(req,res,error)=>{
 
 })
 
+const customParams = (param1,param2,param3,param4) => {
+    return {
+        'county': 'kr',
+        'tag_type_ids': `${param1}`,
+        'tag_type_ids': `${param2}`,
+        'locations':'all',
+        'years': `${param3}`,
+        'years': `${param4}`,
+        'limit':'20',
+        'offset':'20',
+        'job_sort':'company.response_rate_order'
+    }
+};
+
 const wantedCallback = (body)=>{
 
         let title = [];
@@ -30,6 +61,7 @@ const wantedCallback = (body)=>{
         let image = [];
         let url = [];
         let location = [];
+        let endDate = [];
 
         for(let i=0; i<body.data.length; i++){
             companyTitle.push(body.data[i].company.name);
@@ -37,6 +69,7 @@ const wantedCallback = (body)=>{
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
             url.push('https://www.wanted.co.kr/'+'wd/'+body.data[i].id);
+            endDate.push(body.data[i].due_time);
         }
 
 
