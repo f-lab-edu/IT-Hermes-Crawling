@@ -7,15 +7,12 @@ const router = express.Router();
 
 let crawlingData = [];
 
-let requestInfo = {
-    url: 'https://www.wanted.co.kr/api/v4/jobs'
-};
-
 router.get('/',(req,res,error)=>{
     let job = req.query.job;
-
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
+    let lastUrl;
+
     let developmentField1;
     let developmentField2;
 
@@ -30,7 +27,19 @@ router.get('/',(req,res,error)=>{
         developmentField2=678;
     }
 
-    axios(requestInfo,customParams(developmentField1,developmentField2,startExp,endExp))
+    axios('https://www.wanted.co.kr/api/v4/jobs',{
+        params: {
+            'country': 'kr',
+            'tag_type_ids': `${developmentField1}`,
+            'tag_type_ids': `${developmentField2}`,
+            'locations':'all',
+            'years': `${startExp}`,
+            'years': `${endExp}`,
+            'limit':20,
+            'offset':20,
+            'job_sort':'company.response_rate_order'  
+        }
+    })
     .then((response)=>{
         res.json(wantedCallback(response.data));
     })
@@ -39,20 +48,6 @@ router.get('/',(req,res,error)=>{
     })
 
 })
-
-const customParams = (param1,param2,param3,param4) => {
-    return {
-        'county': 'kr',
-        'tag_type_ids': `${param1}`,
-        'tag_type_ids': `${param2}`,
-        'locations':'all',
-        'years': `${param3}`,
-        'years': `${param4}`,
-        'limit':'20',
-        'offset':'20',
-        'job_sort':'company.response_rate_order'
-    }
-};
 
 const wantedCallback = (body)=>{
 
@@ -78,11 +73,19 @@ const wantedCallback = (body)=>{
                 url:url[i],
                 location: location[i],
                 startDate: commonFunc.todayDate(),
-                endDate: endDate[i]
+                endDate: convertEndDate(endDate[i])
             });
         }
         return crawlingData;
 
 }
+
+const convertEndDate = (date) => {
+    if(date == null){
+        return commonFunc.todayDate();
+    }else{
+        return date+"-00-00-00";
+    }
+};
 
 module.exports = router;
