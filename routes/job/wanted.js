@@ -6,12 +6,13 @@ const express = commonFunc.express;
 const router = express.Router();
 
 let crawlingData = [];
+let lastUrl;
 
 router.get('/',(req,res,error)=>{
     let job = req.query.job;
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
-    let lastUrl;
+    lastUrl = req.query.url;
 
     let developmentField1;
     let developmentField2;
@@ -36,7 +37,7 @@ router.get('/',(req,res,error)=>{
             'years': `${startExp}`,
             'years': `${endExp}`,
             'limit':20,
-            'offset':20,
+            'offset':0,
             'job_sort':'company.response_rate_order'  
         }
     })
@@ -65,8 +66,10 @@ const wantedCallback = (body)=>{
             endDate.push(body.data[i].due_time);
         }
 
-
-        for(let i=0; i<20; i++){
+        for(let i=0; i<body.data.length; i++){
+            if(lastUrl==url[i]){
+                break;
+            }
             crawlingData.push({
                 company: companyTitle[i],
                 title: title[i],
@@ -76,6 +79,7 @@ const wantedCallback = (body)=>{
                 endDate: convertEndDate(endDate[i])
             });
         }
+
         return crawlingData;
 
 }
