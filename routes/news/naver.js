@@ -7,12 +7,14 @@ const express = commonFunc.express;
 const router = express.Router();
 
 let crawlingData = [];
+let lastUrl;
 let requestInfo = {
     url: `https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283`,
     responseType: "arraybuffer"
 };
 
 router.get('/',(req,res,next)=>{
+    lastUrl = req.query.url;
 
     axios(requestInfo)
     .then((response)=>{ 
@@ -61,15 +63,19 @@ const naverNewsCallback = (body)=>{
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let j=0; j<originalContentData.length; j++){
+        for(let i=0; i<originalContentData.length; i++){
+            if(lastUrl==url[i]){
+                break;
+            }
             crawlingData.push({
-                title:title[j],
-                description:content[j],
-                thumbnail:image[j],
-                url: url[j],
-                date: commonFunc.convertTextToDt(dates[j])
+                title:title[i],
+                description:content[i],
+                thumbnail:image[i],
+                url: url[i],
+                date: commonFunc.convertTextToDt(dates[i])
             });
         }
+
         return crawlingData;
 }
 

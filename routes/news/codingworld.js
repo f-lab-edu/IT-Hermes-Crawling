@@ -6,11 +6,13 @@ const express = commonFunc.express;
 const router = express.Router();
 
 let crawlingData = [];
+let lastUrl;
 let requestInfo = {
     url: "https://www.codingworldnews.com/news/articleList.html?sc_section_code=S1N2&view_type=sm"
 };
 
 router.get('/',(req,res,next) => {
+    lastUrl = req.query.url;
 
     axios(requestInfo)
     .then((response)=>{
@@ -61,12 +63,15 @@ const codingworldNewsCallback = (body)=>{
         })
 
         for(let i=0; i<originalDateData.length-1; i++){
+            if(lastUrl=='https://www.codingworldnews.com'+url[i]){
+                break;
+            }
             crawlingData.push({
                 title: title[i],
-                date: dates[i],
-                url: 'https://www.codingworldnews.com'+url[i],
+                description: content[i],
                 thumbnail: image[i],
-                descript: content[i]
+                url: 'https://www.codingworldnews.com'+url[i],
+                date: dates[i]
             });
         }
         return crawlingData;
