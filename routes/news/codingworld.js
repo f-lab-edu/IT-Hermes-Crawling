@@ -16,7 +16,6 @@ router.get('/',(req,res,next) => {
 
     axios(requestInfo)
     .then((response)=>{
-        console.log(lastUrl);
         res.json(codingworldNewsCallback(response.data));
     })
     .catch((error)=>{
@@ -64,15 +63,15 @@ const codingworldNewsCallback = (body)=>{
         })
 
         for(let i=0; i<originalDateData.length-1; i++){
-            if(lastUrl==url[i]){
+            if(lastUrl=='https://www.codingworldnews.com'+url[i]){
                 break;
             }
             crawlingData.push({
                 title: title[i],
-                date: dates[i],
-                url: 'https://www.codingworldnews.com'+url[i],
+                description: content[i],
                 thumbnail: image[i],
-                descript: content[i]
+                url: 'https://www.codingworldnews.com'+url[i],
+                date: dates[i]
             });
         }
         return crawlingData;

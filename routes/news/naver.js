@@ -18,7 +18,6 @@ router.get('/',(req,res,next)=>{
 
     axios(requestInfo)
     .then((response)=>{ 
-        console.log(lastUrl);
         res.json(naverNewsCallback(response.data));
     })
     .catch((error)=>{
