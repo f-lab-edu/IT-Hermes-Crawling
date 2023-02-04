@@ -68,11 +68,11 @@ const naverNewsCallback = (body)=>{
                 break;
             }
             crawlingData.push({
-                title:title[j],
-                description:content[j],
-                thumbnail:image[j],
-                url: url[j],
-                date: commonFunc.convertTextToDt(dates[j])
+                title:title[i],
+                description:content[i],
+                thumbnail:image[i],
+                url: url[i],
+                date: commonFunc.convertTextToDt(dates[i])
             });
         }
 
