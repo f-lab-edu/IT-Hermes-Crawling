@@ -7,13 +7,39 @@ const router = express.Router();
 
 let crawlingData = [];
 
-let requestInfo = {
-    url: 'https://www.wanted.co.kr/api/v4/jobs?1671869983005&country=kr&tag_type_ids=873&tag_type_ids=872&tag_type_ids=678&tag_type_ids=895&tag_type_ids=669&job_sort=company.response_rate_order&locations=all&years=-1'
-};
-
 router.get('/',(req,res,error)=>{
+    let job = req.query.job;
+    let startExp = req.query.minExperience;
+    let endExp = req.query.maxExperience;
+    let lastUrl;
 
-    axios(requestInfo)
+    let developmentField1;
+    let developmentField2;
+
+    if(job=="BACKEND"){
+        developmentField1=872;
+        developmentField2=895;
+    }else if(job=="FRONTEND"){
+        developmentField1=669;
+        developmentField2=669;
+    }else{
+        developmentField1=677;
+        developmentField2=678;
+    }
+
+    axios('https://www.wanted.co.kr/api/v4/jobs',{
+        params: {
+            'country': 'kr',
+            'tag_type_ids': `${developmentField1}`,
+            'tag_type_ids': `${developmentField2}`,
+            'locations':'all',
+            'years': `${startExp}`,
+            'years': `${endExp}`,
+            'limit':20,
+            'offset':20,
+            'job_sort':'company.response_rate_order'  
+        }
+    })
     .then((response)=>{
         res.json(wantedCallback(response.data));
     })
@@ -27,30 +53,39 @@ const wantedCallback = (body)=>{
 
         let title = [];
         let companyTitle = [];
-        let image = [];
         let url = [];
         let location = [];
+        let endDate = [];
 
         for(let i=0; i<body.data.length; i++){
             companyTitle.push(body.data[i].company.name);
-            image.push(body.data[i].title_img.thumb);
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
             url.push('https://www.wanted.co.kr/'+'wd/'+body.data[i].id);
+            endDate.push(body.data[i].due_time);
         }
 
 
         for(let i=0; i<20; i++){
             crawlingData.push({
-                title: title[i],
                 company: companyTitle[i],
-                thumbnail: image[i],
+                title: title[i],
+                url:url[i],
                 location: location[i],
-                url:url[i]
+                startDate: commonFunc.todayDate(),
+                endDate: convertEndDate(endDate[i])
             });
         }
         return crawlingData;
 
 }
+
+const convertEndDate = (date) => {
+    if(date == null){
+        return commonFunc.todayDate();
+    }else{
+        return date+"-00-00-00";
+    }
+};
 
 module.exports = router;
