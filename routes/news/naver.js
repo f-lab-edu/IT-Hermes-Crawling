@@ -63,7 +63,7 @@ const naverNewsCallback = (body)=>{
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let i=0; i<originalContentData.length; i++){
+        for(let i=0; i<20; i++){
             if(lastUrl==url[i]){
                 break;
             }

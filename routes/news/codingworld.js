@@ -62,7 +62,7 @@ const codingworldNewsCallback = (body)=>{
             content.push(title);
         })
 
-        for(let i=0; i<originalDateData.length-1; i++){
+        for(let i=0; i<20; i++){
             if(lastUrl=='https://www.codingworldnews.com'+url[i]){
                 break;
             }
@@ -78,11 +78,25 @@ const codingworldNewsCallback = (body)=>{
 }
 
 const convertDate = (originalDate) => {
-    let changedDate;
-    let base = originalDate.substring(0,10);
-    changedDate = base.replace(".","");
-    changedDate = changedDate.replace(".","");
-    return changedDate;
+    if(originalDate==null){
+        return commonFunc.todayDate();
+    }else{
+        let changedDate='';
+    
+        changedDate+=originalDate.substring(0,4);
+        changedDate+="-";
+        changedDate+=originalDate.substring(5,7);
+        changedDate+='-';
+        changedDate+=originalDate.substring(8,10);
+        changedDate+='-';
+        changedDate+=originalDate.substring(11,13);
+        changedDate+='-';
+        changedDate+=originalDate.substring(14,16);
+        changedDate+='-';
+        changedDate+='00';
+    
+        return changedDate;
+    }
 };
 
 module.exports = router;

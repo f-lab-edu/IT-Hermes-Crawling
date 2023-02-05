@@ -58,7 +58,7 @@ const wantedCallback = (body)=>{
         let location = [];
         let endDate = [];
 
-        for(let i=0; i<body.data.length; i++){
+        for(let i=0; i<20; i++){
             companyTitle.push(body.data[i].company.name);
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
@@ -86,7 +86,7 @@ const wantedCallback = (body)=>{
 
 const convertEndDate = (date) => {
     if(date == null){
-        return commonFunc.todayDate();
+        return "9999-12-31-00-00-00";
     }else{
         return date+"-00-00-00";
     }
