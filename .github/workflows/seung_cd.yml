@@ -21,5 +21,33 @@ jobs:
         password: ${{ secrets.SEUNGKI_SERVER_PASSWORD }}
         port: ${{ secrets.SEUNGKI_SERVER_PORT }}
         script: |
-          cd /usr/it-hermes-project/hermes-cd/
-          ./hermes-crawling-cd.sh
+          REPOSITORY=/usr/it-hermes-project
+
+          cd $REPOSITORY/IT-Hermes-Crawling
+
+          echo "> Git Pull"
+
+          git pull
+
+          echo "> 원격저장소에서 브랜치 가져옴"
+
+          git remote update
+
+          echo "> Git 브랜치 명 변경(임시)"
+
+          git checkout main
+
+          CURRENT_PID=$(pgrep -f IT-Hermes-Crawling)
+          echo "$CURRENT_PID"
+
+          if [ -z $CURRENT_PID ]; then
+              echo "> 현재 구동중인 Crawling 애플리케이션이 없으므로 종료하지 않습니다."
+          else
+              echo "> 현재서비스 종료 (kill -9 $CURRENT_PID)"
+              kill -9 $CURRENT_PID
+              sleep 5
+          fi
+
+          echo "> 새 어플리케이션 배포"
+
+          nohup node $REPOSITORY/IT-Hermes-Crawling/app.js &
