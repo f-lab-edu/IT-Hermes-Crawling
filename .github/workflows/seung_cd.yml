@@ -23,4 +23,3 @@ jobs:
         script: |
           cd /usr/it-hermes-project/hermes-cd/
           ./hermes-crawling-cd.sh
-          =
