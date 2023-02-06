@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Connect And seung-server cd work
+    - name: Connect seung-server and server-cd work
       uses: appleboy/ssh-action@v0.1.4
       with:
         host: ${{ secrets.SEUNGKI_SERVER_IP }}
