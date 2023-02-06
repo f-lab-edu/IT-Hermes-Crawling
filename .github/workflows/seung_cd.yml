@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: connect seung-server and crawling-cd shell script work
+    - name: connect seung-server and crawling-cd shell script
       uses: appleboy/ssh-action@v0.1.4
       with:
         host: ${{ secrets.SEUNGKI_SERVER_IP }}
