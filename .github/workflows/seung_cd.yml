@@ -21,5 +21,5 @@ jobs:
         password: ${{ secrets.SEUNGKI_SERVER_PASSWORD }}
         port: ${{ secrets.SEUNGKI_SERVER_PORT }}
         script: |
-          cd /usr/it-hermes-project/IT-Hermes-Crawling/
+          cd /usr/project/IT-Hermes-Crawling/
           pm2 restart app.js
