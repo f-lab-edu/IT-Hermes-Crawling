@@ -13,6 +13,8 @@ router.get('/',(req,res,error)=>{
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
     lastUrl = req.query.url;
+    let startExpParam;
+    let endExpParam;
 
     let developmentField1;
     let developmentField2;
@@ -28,14 +30,29 @@ router.get('/',(req,res,error)=>{
         developmentField2=678;
     }
 
+    if(startExp==0&&endExp==0){
+        startExpParam=0;
+        endExpParam=0;
+    }else if(startExp==1&&endExp==4){
+        startExpParam=1;
+        endExpParam=4;
+    }else if(startExp==5&&endExp==9){
+        startExpParam=5;
+        endExpParam=9;
+    }else{
+        startExpParam=10;
+        endExpParam=10;
+    }
+
+
     axios('https://www.wanted.co.kr/api/v4/jobs',{
         params: {
             'country': 'kr',
             'tag_type_ids': `${developmentField1}`,
             'tag_type_ids': `${developmentField2}`,
             'locations':'all',
-            'years': `${startExp}`,
-            'years': `${endExp}`,
+            'years': `${startExpParam}`,
+            'years': `${endExpParam}`,
             'limit':20,
             'offset':0,
             'job_sort':'company.response_rate_order'  
