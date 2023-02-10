@@ -99,6 +99,41 @@ module.exports.convertTextToDt= function(text) {
             year = stringText.replace('년전','');
         }
         editDate = today.setFullYear(today.getFullYear()-year);
+    } else if(stringText.includes('second')) {
+        let seconds="";
+        seconds = stringText.replace('second ago','').replace('seconds ago','');
+
+        editDate = today.setSeconds(today.getSeconds()-Number(seconds));
+    } else if(stringText.includes('minute')) {
+        let minutes="";
+        minutes = stringText.replace('minutes ago','').replace('minute ago','');
+
+        editDate = today.setMinutes(today.getMinutes()-Number(minutes));
+    } else if(stringText.includes('hour')) {
+        let hours="";
+        hours = stringText.replace('hours ago','').replace('hour ago','');
+
+        editDate = today.setHours(today.getHours()-Number(hours));
+    } else if(stringText.includes('day')) {
+        let day="";
+        day = stringText.replace('days ago','').replace('day ago','');
+
+        editDate = today.setDate(today.getDate()-Number(day));
+    } else if(stringText.includes('week')) {
+        let day="";
+        day = stringText.replace('weeks ago','').replace('week ago','');
+
+        editDate = today.setDate(today.getDate()-Number(day)*7);
+    }  else if(stringText.includes('month')) {
+        let month="";
+        month = stringText.replace('months ago','').replace('month ago','');
+
+        editDate = today.setMonth(today.getMonth()-month);
+    } else if(stringText.includes('year')) {
+        let year="";
+        year = stringText.replace('years ago','').replace('year ago','');
+
+        editDate = today.setFullYear(today.getFullYear()-year);
     } else {
         let editDate = String(text).split('.');
         return editDate[0]+"-"+editDate[1]+"-"+editDate[2]+"-"+"00-00-00";
