@@ -20,7 +20,7 @@ router.get('/',(req,res,error)=>{
     if(job=="BACKEND"){
         developmentField1=872;
         developmentField2=895;
-    }else if(job=="FRONTEND"){
+    }else if(job=="FRONT"){
         developmentField1=669;
         developmentField2=669;
     }else{
