@@ -63,7 +63,7 @@ const naverNewsCallback = (body)=>{
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let i=title.length-1; i>0; i--){
+        for(let i=0; i<20; i++){
             crawlingData.push({
                 title:title[i],
                 description:content[i],
