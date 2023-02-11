@@ -9,7 +9,7 @@ const router = express.Router();
 let crawlingData = [];
 let lastUrl;
 let requestInfo = {
-    url: `https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=283`,
+    url: `https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=105&sid2=230`,
     responseType: "arraybuffer"
 };
 
@@ -63,10 +63,7 @@ const naverNewsCallback = (body)=>{
             url.push(originalUrlData[i].attribs.href);
         }
 
-        for(let i=0; i<20; i++){
-            if(lastUrl==url[i]){
-                break;
-            }
+        for(let i=title.length-1; i>0; i--){
             crawlingData.push({
                 title:title[i],
                 description:content[i],
@@ -74,6 +71,9 @@ const naverNewsCallback = (body)=>{
                 url: url[i],
                 date: commonFunc.convertTextToDt(dates[i])
             });
+            if(lastUrl==url[i]){
+                break;
+            }
         }
 
         return crawlingData;
