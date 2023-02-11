@@ -5,7 +5,7 @@ const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 
-let crawlingData = [];
+const defaultUrl="https://www.codingworldnews.com";
 let lastUrl;
 let requestInfo = {
     url: "https://www.codingworldnews.com/news/articleList.html?sc_section_code=S1N2&view_type=sm"
@@ -33,6 +33,7 @@ const codingworldNewsCallback = (body)=>{
         let originalImageData = $('.type2 img');
         let originalContentData = $('.lead.line-6x2 a').toArray();
 
+        let crawlingData = [];
         let title = [];
         let image = [];
         let dates = [];
@@ -63,14 +64,14 @@ const codingworldNewsCallback = (body)=>{
         })
 
         for(let i=0; i<20; i++){
-            if(lastUrl=='https://www.codingworldnews.com'+url[i]){
+            if(lastUrl==defaultUrl+url[i]){
                 break;
             }
             crawlingData.push({
                 title: title[i],
                 description: content[i],
                 thumbnail: image[i],
-                url: 'https://www.codingworldnews.com'+url[i],
+                url: defaultUrl+url[i],
                 date: dates[i]
             });
         }
