@@ -13,8 +13,6 @@ router.get('/',(req,res,error)=>{
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
     lastUrl = req.query.url;
-    let startExpParam;
-    let endExpParam;
 
     let developmentField1;
     let developmentField2;
@@ -24,40 +22,63 @@ router.get('/',(req,res,error)=>{
         developmentField2=895;
     }else if(job=="FRONT"){
         developmentField1=669;
-        developmentField2=669;
+        developmentField2=873;
     }else{
         developmentField1=677;
         developmentField2=678;
     }
+    let requestParam = {};
 
     if(startExp==0&&endExp==0){
-        startExpParam=0;
-        endExpParam=0;
-    }else if(startExp==1&&endExp==4){
-        startExpParam=1;
-        endExpParam=4;
-    }else if(startExp==5&&endExp==9){
-        startExpParam=5;
-        endExpParam=9;
-    }else{
-        startExpParam=10;
-        endExpParam=10;
-    }
-
-
-    axios('https://www.wanted.co.kr/api/v4/jobs',{
-        params: {
+        requestParam = {
             'country': 'kr',
             'tag_type_ids': `${developmentField1}`,
             'tag_type_ids': `${developmentField2}`,
             'locations':'all',
-            'years': `${startExpParam}`,
-            'years': `${endExpParam}`,
-            'limit':20,
-            'offset':0,
-            'job_sort':'company.response_rate_order'  
+            'years': '0',
+            'limit':'20',
+            'offset':'0',
+            'job_sort':'company.response_rate_order'
         }
-    })
+    }else if(startExp==1&&endExp==4){
+        requestParam = {
+            'country': 'kr',
+            'tag_type_ids': `${developmentField1}`,
+            'tag_type_ids': `${developmentField2}`,
+            'locations':'all',
+            'years': '1',
+            'years': '4',
+            'limit':'20',
+            'offset':'0',
+            'job_sort':'company.response_rate_order'
+        }
+    }else if(startExp==5&&endExp==9){
+        requestParam = {
+            'country': 'kr',
+            'tag_type_ids': `${developmentField1}`,
+            'tag_type_ids': `${developmentField2}`,
+            'locations':'all',
+            'years': '5',
+            'years': '9',
+            'limit':'20',
+            'offset':'0',
+            'job_sort':'company.response_rate_order'
+        }
+    }else{
+        requestParam = {
+            'country': 'kr',
+            'tag_type_ids': `${developmentField1}`,
+            'tag_type_ids': `${developmentField2}`,
+            'locations':'all',
+            'years': '10',
+            'limit':'20',
+            'offset':'0',
+            'job_sort':'company.response_rate_order'
+        }
+    }
+
+    axios('https://www.wanted.co.kr/api/v4/jobs',{
+        params: requestParam})
     .then((response)=>{
         res.json(wantedCallback(response.data));
     })
@@ -74,8 +95,9 @@ const wantedCallback = (body)=>{
         let url = [];
         let location = [];
         let endDate = [];
+        crawlingData = [];
 
-        for(let i=0; i<20; i++){
+        for(let i=0; i<body.data.length; i++){
             companyTitle.push(body.data[i].company.name);
             location.push(body.data[i].address.location);
             title.push(body.data[i].position);
