@@ -13,7 +13,6 @@ let requestInfo = {
     responseType: "arraybuffer"
 };
 
-
 router.get('/',(req,res,next)=>{
     lastUrl = req.query.url;
 
@@ -76,7 +75,6 @@ const naverNewsCallback = (body)=>{
                 break;
             }
         }
-
         return crawlingData;
 }
 
