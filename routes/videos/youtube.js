@@ -20,7 +20,6 @@ router.get('/', (req,res,next) => {
     youtuberUrl= req.query.contentsProvider;
     /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
     
-    
     axios(options(youtuberUrl))
         .then(response => res.json(youtubeResponseData(parseYoutubeVideoList(response.data))))
         .catch(error => res.json(error));
@@ -29,8 +28,9 @@ router.get('/', (req,res,next) => {
 
 const parseYoutubeVideoList = (body) => {
     const $ = cheerio.load(body);
-    let entireData= $('script')[33].children[0].data;
+    let entireData= $('script')[34].children[0].data;
     /** JSON 타입으로 변환하기 위해, 불필요한 데이터 제거 */
+
     entireData = String(entireData).slice(0,-1).substring(20,entireData.length);
     /** String to JSON */
     const jsonData = JSON.parse(entireData);
