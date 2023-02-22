@@ -89,7 +89,6 @@ router.get('/',(req,res,error)=>{
 })
 
 const wantedCallback = (body)=>{
-
         let title = [];
         let companyTitle = [];
         let url = [];

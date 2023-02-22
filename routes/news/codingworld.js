@@ -33,6 +33,8 @@ const codingworldNewsCallback = (body)=>{
         let originalImageData = $('.type2 img');
         let originalContentData = $('.lead.line-6x2 a').toArray();
 
+        console.log(originalData.length);
+
         let crawlingData = [];
         let title = [];
         let image = [];
