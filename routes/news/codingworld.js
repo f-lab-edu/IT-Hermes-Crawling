@@ -5,6 +5,8 @@ const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 
+const queueName = 'codingWorldQueue';
+let globalChannel;
 const defaultUrl="https://www.codingworldnews.com";
 let lastUrl;
 let requestInfo = {
@@ -13,6 +15,8 @@ let requestInfo = {
 
 router.get('/',(req,res,next) => {
     lastUrl = req.query.url;
+
+    rabbitmqconnect();
 
     axios(requestInfo)
     .then((response)=>{
@@ -24,7 +28,6 @@ router.get('/',(req,res,next) => {
 
 })
 
-
 const codingworldNewsCallback = (body)=>{
         const $ = cheerio.load(body);
 
@@ -32,8 +35,6 @@ const codingworldNewsCallback = (body)=>{
         let originalDateData = $('span em:nth-child(3)').toArray();
         let originalImageData = $('.type2 img');
         let originalContentData = $('.lead.line-6x2 a').toArray();
-
-        console.log(originalData.length);
 
         let crawlingData = [];
         let title = [];
@@ -76,7 +77,10 @@ const codingworldNewsCallback = (body)=>{
                 url: defaultUrl+url[i],
                 date: dates[i]
             });
+            console.log(crawlingData[i]);
+            globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingData[i])));
         }
+
         return crawlingData;
 }
 
@@ -101,5 +105,24 @@ const convertDate = (originalDate) => {
         return changedDate;
     }
 };
+
+var amqp = require('amqplib/callback_api');
+
+const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
+
+        channel.assertQueue(queueName, {
+            durable: false
+        });
+        
+        globalChannel=channel;
+    });
+});
 
 module.exports = router;

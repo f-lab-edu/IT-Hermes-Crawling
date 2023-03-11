@@ -6,11 +6,14 @@ const express = commonFunc.express;
 const router = express.Router();
 let lastUrl;
 const defaultUrl = "https://yozm.wishket.com";
+const queueName = 'yozmQueue';
+let globalChannel;
 
 router.get('/', (req,res,next) => {
 
     /** page 기준 정할 시, 동적으로 변환(메소드 사용 예정) */
     lastUrl = req.query.url;
+    rabbitmqconnect();
 
     axios(requestYozmParameter())
          .then(response => res.json(responseYozmData(response.data)))
@@ -46,9 +49,29 @@ const responseYozmData = (body) => {
             thumbnail : defaultUrl+imageList[i].attribs.src,
             url:defaultUrl+list[i].attribs.href,
             date:newsDateList[i]
-        })            
+        })      
+        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));      
     }
     return crawlingList;
 }
+
+var amqp = require('amqplib/callback_api');
+
+const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
+
+        channel.assertQueue(queueName, {
+            durable: false
+        });
+        
+        globalChannel=channel;
+    });
+});
 
 module.exports = router;

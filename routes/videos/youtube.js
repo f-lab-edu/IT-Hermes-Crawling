@@ -11,6 +11,8 @@ let lastIndex;
 let youtuber;
 /* 유튜버 Url 정보 */
 let youtuberUrl;
+const queueName = 'youtubeQueue';
+let globalChannel;
 
 router.get('/', (req,res,next) => {
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
@@ -19,6 +21,7 @@ router.get('/', (req,res,next) => {
     youtuber= req.query.youtuber;
     youtuberUrl= req.query.contentsProvider;
     /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
+    rabbitmqconnect();
     
     axios(options(youtuberUrl))
         .then(response => res.json(youtubeResponseData(parseYoutubeVideoList(response.data))))
@@ -59,9 +62,29 @@ const youtubeResponseData = (list) => {
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
             url:defaultUrl+videoIdAndThumbnail.videoId,
             date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
-        });            
+        });   
+        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));         
     }
     return crawlingList;
 }
+
+var amqp = require('amqplib/callback_api');
+
+const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
+
+        channel.assertQueue(queueName, {
+            durable: false
+        });
+        
+        globalChannel=channel;
+    });
+});
 
 module.exports = router;

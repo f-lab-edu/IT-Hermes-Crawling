@@ -8,6 +8,9 @@ const router = express.Router();
 let crawlingData = [];
 let lastUrl;
 
+const queueName = 'wantedQueue';
+let globalChannel;
+
 router.get('/',(req,res,error)=>{
     let job = req.query.job;
     let startExp = req.query.minExperience;
@@ -129,5 +132,24 @@ const convertEndDate = (date) => {
         return date+"-00-00-00";
     }
 };
+
+var amqp = require('amqplib/callback_api');
+
+const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    connection.createChannel(function(error1, channel) {
+        if (error1) {
+            throw error1;
+        }
+
+        channel.assertQueue(queueName, {
+            durable: false
+        });
+        
+        globalChannel=channel;
+    });
+});
 
 module.exports = router;

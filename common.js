@@ -11,6 +11,7 @@ module.exports.puppeteer = require('puppeteer');
 /* axios 라이브러리 */
 module.exports.axios = require('axios');
 
+
 /*  현재 일자(yyyymmdd) */
 module.exports.todayDate= function() {
     return String(today.getFullYear())+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(('0' + today.getDate()).slice(-2))+"-00-00-00";
