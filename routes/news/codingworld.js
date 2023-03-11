@@ -4,6 +4,7 @@ const axios = commonFunc.axios;
 const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
+const amqp = commonFunc.mq;
 
 const queueName = 'codingWorldQueue';
 let globalChannel;
@@ -105,8 +106,6 @@ const convertDate = (originalDate) => {
         return changedDate;
     }
 };
-
-var amqp = require('amqplib/callback_api');
 
 const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {

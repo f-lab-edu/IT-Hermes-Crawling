@@ -13,6 +13,7 @@ let youtuber;
 let youtuberUrl;
 const queueName = 'youtubeQueue';
 let globalChannel;
+const amqp = commonFunc.mq;
 
 router.get('/', (req,res,next) => {
     /*  유튜버의 정보는 파라미터(유튜버, 마지막 순번)를 통해 전달 받을 계획 */
@@ -67,8 +68,6 @@ const youtubeResponseData = (list) => {
     }
     return crawlingList;
 }
-
-var amqp = require('amqplib/callback_api');
 
 const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {

@@ -8,6 +8,7 @@ let lastUrl;
 const defaultUrl = "https://yozm.wishket.com";
 const queueName = 'yozmQueue';
 let globalChannel;
+const amqp = commonFunc.mq;
 
 router.get('/', (req,res,next) => {
 
@@ -54,8 +55,6 @@ const responseYozmData = (body) => {
     }
     return crawlingList;
 }
-
-var amqp = require('amqplib/callback_api');
 
 const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {

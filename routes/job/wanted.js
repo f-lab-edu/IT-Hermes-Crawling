@@ -10,6 +10,7 @@ let lastUrl;
 
 const queueName = 'wantedQueue';
 let globalChannel;
+const amqp = commonFunc.mq;
 
 router.get('/',(req,res,error)=>{
     let job = req.query.job;
@@ -132,8 +133,6 @@ const convertEndDate = (date) => {
         return date+"-00-00-00";
     }
 };
-
-var amqp = require('amqplib/callback_api');
 
 const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {

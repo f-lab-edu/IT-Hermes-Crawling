@@ -10,6 +10,7 @@ module.exports.cheerio = require('cheerio');
 module.exports.puppeteer = require('puppeteer');
 /* axios 라이브러리 */
 module.exports.axios = require('axios');
+module.exports.mq = require('amqplib/callback_api');
 
 
 /*  현재 일자(yyyymmdd) */

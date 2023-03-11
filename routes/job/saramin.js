@@ -6,6 +6,7 @@ const express = commonFunc.express;
 const router = express.Router();
 let lastUrl;
 const defaultUrl = 'https://www.saramin.co.kr';
+const amqp = commonFunc.mq;
 
 const queueName = 'saraminQueue';
 let globalChannel;
@@ -97,7 +98,6 @@ const convertEndDate = (endText) => {
     return endDate;
 }
 
-var amqp = require('amqplib/callback_api');
 
 const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
