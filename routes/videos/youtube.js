@@ -11,7 +11,7 @@ let lastIndex;
 let youtuber;
 /* 유튜버 Url 정보 */
 let youtuberUrl;
-const queueName = 'youtubeQueue';
+let queueName;
 let globalChannel;
 const amqp = commonFunc.mq;
 
@@ -21,6 +21,7 @@ router.get('/', (req,res,next) => {
     lastUrl = req.query.url;
     youtuber= req.query.youtuber;
     youtuberUrl= req.query.contentsProvider;
+    queueName = youtuber+'Queue';
     /* 임의로 데이터 삽입(추후 해당 크롤링 서버를 호출하는 곳에서 처리) */
     rabbitmqconnect();
     
