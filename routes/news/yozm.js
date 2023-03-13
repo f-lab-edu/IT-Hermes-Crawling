@@ -6,7 +6,7 @@ const express = commonFunc.express;
 const router = express.Router();
 let lastUrl;
 const defaultUrl = "https://yozm.wishket.com";
-const queueName = 'yozmQueue';
+const queueName = 'YOZMQueue';
 let globalChannel;
 const amqp = commonFunc.mq;
 

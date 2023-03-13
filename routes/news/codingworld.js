@@ -6,7 +6,7 @@ const express = commonFunc.express;
 const router = express.Router();
 const amqp = commonFunc.mq;
 
-const queueName = 'codingWorldQueue';
+const queueName = 'CODINGWORLDQueue';
 let globalChannel;
 const defaultUrl="https://www.codingworldnews.com";
 let lastUrl;
