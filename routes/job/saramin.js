@@ -11,6 +11,7 @@ const amqp = commonFunc.mq;
 const queueName = 'SARAMINQueue';
 let globalChannel;
 let grade;
+let job;
 /* response Data 
 1. 제목
 2. 채용공고명
@@ -31,7 +32,7 @@ router.get('/', (req, res, next) => {
     /** cat_kewd(직무) : 백엔드(84) 모바일(86) 프론트(92)) */
     /** isCheckNonExp(경력무관 처리) : 포함 시 'y' 안할 시 '' */
     rabbitmqconnect();
-    let job=req.query.job;
+    job=req.query.job;
     grade=req.query.grade;
     let startExp=req.query.minExperience;
     let endExp=req.query.maxExperience;
@@ -116,7 +117,7 @@ const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, 
         }
 
         channel.assertQueue(queueName, {
-            durable: false
+            durable: true
         });
         
         globalChannel=channel;

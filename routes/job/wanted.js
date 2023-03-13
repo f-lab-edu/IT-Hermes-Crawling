@@ -5,17 +5,17 @@ const cheerio = commonFunc.cheerio;
 const express = commonFunc.express;
 const router = express.Router();
 
-let crawlingData = [];
+let crawlingList = [];
 let lastUrl;
 let grade;
+let job;
 const queueName = 'WANTEDQueue';
 let globalChannel;
 const amqp = commonFunc.mq;
 
 router.get('/',(req,res,error)=>{
     rabbitmqconnect();
-    
-    let job = req.query.job;
+    job = req.query.job;
     grade=req.query.grade;
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
@@ -96,12 +96,13 @@ router.get('/',(req,res,error)=>{
 })
 
 const wantedCallback = (body)=>{
+    
         let title = [];
         let companyTitle = [];
         let url = [];
         let location = [];
         let endDate = [];
-        crawlingData = [];
+        crawlingList = [];
 
         for(let i=0; i<body.data.length; i++){
             companyTitle.push(body.data[i].company.name);
@@ -115,7 +116,7 @@ const wantedCallback = (body)=>{
             if(lastUrl==url[i]){
                 break;
             }
-            crawlingData.push({
+            crawlingList.push({
                 company: companyTitle[i],
                 title: title[i],
                 url:url[i],
@@ -126,9 +127,9 @@ const wantedCallback = (body)=>{
                 endDate: convertEndDate(endDate[i])
             });
         }
-        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
 
-        return crawlingData;
+        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
+        return crawlingList;
 
 }
 
@@ -150,7 +151,7 @@ const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, 
         }
 
         channel.assertQueue(queueName, {
-            durable: false
+            durable: true
         });
         
         globalChannel=channel;
