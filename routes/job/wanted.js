@@ -7,13 +7,16 @@ const router = express.Router();
 
 let crawlingData = [];
 let lastUrl;
-
-const queueName = 'wantedQueue';
+let grade;
+const queueName = 'WANTEDQueue';
 let globalChannel;
 const amqp = commonFunc.mq;
 
 router.get('/',(req,res,error)=>{
+    rabbitmqconnect();
+    
     let job = req.query.job;
+    grade=req.query.grade;
     let startExp = req.query.minExperience;
     let endExp = req.query.maxExperience;
     lastUrl = req.query.url;
@@ -117,10 +120,13 @@ const wantedCallback = (body)=>{
                 title: title[i],
                 url:url[i],
                 location: location[i],
+                job: job,
+                grade : grade,
                 startDate: commonFunc.todayDate(),
                 endDate: convertEndDate(endDate[i])
             });
         }
+        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
 
         return crawlingData;
 

@@ -8,8 +8,9 @@ let lastUrl;
 const defaultUrl = 'https://www.saramin.co.kr';
 const amqp = commonFunc.mq;
 
-const queueName = 'saraminQueue';
+const queueName = 'SARAMINQueue';
 let globalChannel;
+let grade;
 /* response Data 
 1. 제목
 2. 채용공고명
@@ -29,7 +30,9 @@ router.get('/', (req, res, next) => {
     /** endExp(경력종료년차) */
     /** cat_kewd(직무) : 백엔드(84) 모바일(86) 프론트(92)) */
     /** isCheckNonExp(경력무관 처리) : 포함 시 'y' 안할 시 '' */
+    rabbitmqconnect();
     let job=req.query.job;
+    grade=req.query.grade;
     let startExp=req.query.minExperience;
     let endExp=req.query.maxExperience;
     lastUrl=req.query.url;
@@ -75,10 +78,14 @@ const responseSaraminData = (body) => {
             title:titleList[i].attribs.title,
             url:defaultUrl+urlAndCompanyList[i].attribs.href,
             location:locationList[i].children[0].data,
+            job: job,
+            grade : grade,
             startDate:commonFunc.todayDate(),
             endDate:convertEndDate(endDateList[i].children[0].data)
         })
     }
+
+    globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
     return crawlingList; 
 }
 
