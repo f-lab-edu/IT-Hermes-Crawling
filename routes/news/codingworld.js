@@ -117,7 +117,7 @@ const rabbitmqconnect = () => amqp.connect('amqp://localhost', function(error0, 
         }
 
         channel.assertQueue(queueName, {
-            durable: false
+            durable: true
         });
         
         globalChannel=channel;
