@@ -50,9 +50,9 @@ const responseYozmData = (body) => {
             thumbnail : defaultUrl+imageList[i].attribs.src,
             url:defaultUrl+list[i].attribs.href,
             date:newsDateList[i]
-        })      
-        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));      
+        })            
     }
+    globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
     return crawlingList;
 }
 
