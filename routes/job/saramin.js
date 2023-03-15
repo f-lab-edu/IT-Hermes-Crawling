@@ -84,9 +84,9 @@ const responseSaraminData = (body) => {
             startDate:commonFunc.todayDate(),
             endDate:convertEndDate(endDateList[i].children[0].data)
         })
+        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));
     }
 
-    globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
     return crawlingList; 
 }
 

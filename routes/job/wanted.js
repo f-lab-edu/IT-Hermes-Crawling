@@ -126,9 +126,9 @@ const wantedCallback = (body)=>{
                 startDate: commonFunc.todayDate(),
                 endDate: convertEndDate(endDate[i])
             });
+            globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));
         }
 
-        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList)));
         return crawlingList;
 
 }

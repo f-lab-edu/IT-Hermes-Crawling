@@ -78,9 +78,8 @@ const codingworldNewsCallback = (body)=>{
                 url: defaultUrl+url[i],
                 date: dates[i]
             });
-            console.log(crawlingData[i]);
+            globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingData[i])));
         }
-        globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingData)));
         return crawlingData;
 }
 
