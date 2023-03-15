@@ -82,7 +82,8 @@ const responseSaraminData = (body) => {
             job: job,
             grade : grade,
             startDate:commonFunc.todayDate(),
-            endDate:convertEndDate(endDateList[i].children[0].data)
+            endDate:convertEndDate(endDateList[i].children[0].data),
+            crawlingIndex:i
         })
         globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));
     }

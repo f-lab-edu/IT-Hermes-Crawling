@@ -69,7 +69,8 @@ const naverNewsCallback = (body)=>{
                 description:content[i],
                 thumbnail:image[i],
                 url: url[i],
-                date: commonFunc.convertTextToDt(dates[i])
+                date: commonFunc.convertTextToDt(dates[i]),
+                crawlingIndex:i
             });
             if(lastUrl==url[i]){
                 break;

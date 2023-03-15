@@ -63,7 +63,8 @@ const youtubeResponseData = (list) => {
             description:youtuberUrl,
             thumbnail:videoIdAndThumbnail.thumbnail.thumbnails[0].url,
             url:defaultUrl+videoIdAndThumbnail.videoId,
-            date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText)
+            date: commonFunc.convertTextToDt(videoIdAndThumbnail.publishedTimeText.simpleText),
+            crawlingIndex:i
         });   
         globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));          
     }

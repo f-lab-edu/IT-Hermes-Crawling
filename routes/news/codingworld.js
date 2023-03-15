@@ -76,7 +76,8 @@ const codingworldNewsCallback = (body)=>{
                 description: content[i],
                 thumbnail: image[i],
                 url: defaultUrl+url[i],
-                date: dates[i]
+                date: dates[i],
+                crawlingIndex:i
             });
             globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingData[i])));
         }

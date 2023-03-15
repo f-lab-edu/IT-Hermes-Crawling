@@ -35,7 +35,8 @@ const responseSaraminData = (body) => {
             url:defaultUrl+urlAndCompanyList[i].attribs.href,
             location:locationList[i].children[0].data,
             startDate:commonFunc.todayDate(),
-            endDate:convertEndDate(endDateList[i].children[0].data)
+            endDate:convertEndDate(endDateList[i].children[0].data),
+            crawlingIndex:i
         })
     }
     return crawlingList; 

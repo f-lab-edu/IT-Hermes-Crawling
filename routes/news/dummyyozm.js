@@ -43,7 +43,8 @@ const responseYozmData = (body) => {
             description: descriptList[i].children[0].data,
             thumbnail : defaultUrl+imageList[i].attribs.src,
             url:defaultUrl+list[i].attribs.href,
-            date:newsDateList[i]
+            date:newsDateList[i],
+            crawlingIndex:i
         })            
     }
     return crawlingList;

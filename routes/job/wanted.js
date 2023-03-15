@@ -124,7 +124,8 @@ const wantedCallback = (body)=>{
                 job: job,
                 grade : grade,
                 startDate: commonFunc.todayDate(),
-                endDate: convertEndDate(endDate[i])
+                endDate: convertEndDate(endDate[i]),
+                crawlingIndex:i
             });
             globalChannel.sendToQueue(queueName, Buffer.from(JSON.stringify(crawlingList[i])));
         }

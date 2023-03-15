@@ -54,7 +54,8 @@ const wantedCallback = (body)=>{
                 url:url[i],
                 location: location[i],
                 startDate: commonFunc.todayDate(),
-                endDate: convertEndDate(endDate[i])
+                endDate: convertEndDate(endDate[i]),
+                crawlingIndex:i
             });
         }
         return crawlingData;
