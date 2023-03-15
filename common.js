@@ -19,7 +19,7 @@ module.exports.todayDate= function() {
 }
 /*  내일 일자(yyyymmdd) */
 module.exports.tomorrowDate= function() {
-    return String(today.getFullYear())+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(('0' + today.getDate()+1).slice(-2))+"-00-00-00";
+    return String(today.getFullYear())+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(('0' + (today.getDate()+1)).slice(-2))+"-00-00-00";
 }
 /*  현재 년도이지만, 달과 일 데이터는 외부에서 파라미터로 가져오는 일자함수(yyyymmdd) */
 module.exports.customCurrentYearMonthAndDay= function(month, day) {
